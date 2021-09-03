@@ -30,8 +30,28 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 (a) What does each row of the data matrix represent?
+
+|       **Each row of the matrix represents and indiviual with their demographic data, smoking status and region they live in.** 
+
 (b) How many participants were included in the survey?
+
+|       **1693 observations were included in the data**
+
 (c) Indicate whether each variable in the study is numerical or categorical. If numerical, identify as continuous or discrete. If categorical, indicate if the variable is ordinal.
+
+
+|       **Sex - categorical**
+|       **Age - numerical & continuous**
+|       **Marital Status - categorical**
+|       **Highest Qualifications - categorical ordinal**
+|       **Nationality - categorical**
+|       **Ethnicity - categorical**
+|       **Gross Income - categorical ordinal**
+|       **Region - categorical**
+|       **Smoke? - categorical**
+|       **Amount Weekends - numerical & continuous**
+|       **Amount Weekdays - numerical & continuous**
+|       **Type - categorical**
 
 ```{r, eval=FALSE, echo=FALSE}
 # NOTE: It is not absolutely necessary to load the data to answer these 
@@ -54,8 +74,15 @@ smoking <- readxl::read_excel('11263-Smoking_tcm86-13253.xls')
 **Cheaters, scope of inference**. (1.14, p. 29) Exercise 1.5 introduces a study where researchers studying the relationship between honesty, age, and self-control conducted an experiment on 160 children between the ages of 5 and 15[^1]. The researchers asked each child to toss a fair coin in private and to record the outcome (white or black) on a paper sheet, and said they would only reward children who report white. Half the students were explicitly told not to cheat and the others were not given any explicit instructions. Differences were observed in the cheating rates in the instruction and no instruction groups, as well as some differences across children's characteristics within each group.
 
 (a) Identify the population of interest and the sample in this study.
+
+|       **population of interest: children between the ages of 5 and 15**
+|       **the sample population was 160 children between the ages of 5 and 15**
+
 (b) Comment on whether or not the results of the study can be generalized to the population, and
 if the findings of the study can be used to establish causal relationships.
+
+|       **yes the findings from the sample group can be generalized to the population**
+|       **yes the findings of the study could be used to establish a causal relationship**
 
 [^1]: Alessandro Bucciol and Marco Piovesan. "Luck or cheating? A field experiment on honesty with children". In: Journal of Economic Psychology 32.1 (2011), pp. 73-78. Available at https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1307694
 
@@ -73,13 +100,15 @@ if the findings of the study can be used to establish causal relationships.
 
 Based on this study, can we conclude that smoking causes dementia later in life? Explain your reasoning.
 
+|       **no - the study finds a coorolation but does not assert any findings realted to causality. Although it concludes that there is a coorelation between smoking and dementia in later life it does not create a causal link**
+
 (b) Another article titled The School Bully Is Sleepy states the following:
 
 "The University of Michigan study, collected survey data from parents on each child's sleep habits and asked both parents and teachers to assess behavioral concerns. About a third of the students studied were identified by parents or teachers as having problems with disruptive behavior or bullying. The researchers found that children who had behavioral issues and those who were identified as bullies were twice as likely to have shown symptoms of sleep disorders."
 
 A friend of yours who read the article says, "The study shows that sleep disorders lead to bullying in school children." Is this statement justified? If not, how best can you describe the conclusion that can be drawn from this study?
 
-
+|       **no - the study finds a coorolation but does not assert any findings realted to causality. Although it concludes that sleep disorders and bulling behavior are correlated it makes no assertions about a causal link.**
 
 
 
@@ -90,12 +119,28 @@ A friend of yours who read the article says, "The study shows that sleep disorde
 **Exercise and mental health.** (1.34, p. 35) A researcher is interested in the effects of exercise on mental health and he proposes the following study: Use stratified random sampling to ensure rep- resentative proportions of 18-30, 31-40 and 41-55 year olds from the population. Next, randomly assign half the subjects from each age group to exercise twice a week, and instruct the rest not to exercise. Conduct a mental health exam at the beginning and at the end of the study, and compare the results.
 
 (a) What type of study is this?
+
+|       **experiment**
+
 (b) What are the treatment and control groups in this study?
+
+|       **treatment group - half the population that was instructed to exercise twice a week**
+|       **control - half the popluation that was instructed not to exercise**
+
 (c) Does this study make use of blocking? If so, what is the blocking variable?
+
+|       **this is not an example of blocking. the age groups are stratified** 
+
 (d) Does this study make use of blinding?
+
+|       **no the treatment group is clearly observable**
+
 (e) Comment on whether or not the results of the study can be used to establish a causal rela- tionship between exercise and mental health, and indicate whether or not the conclusions can be generalized to the population at large.
+
+|       **yes because the mental health of treatment subjects is explored before and after the treatment period** 
+
 (f) Suppose you are given the task of determining if this proposed study should get funding. Would you have any reservations about the study proposal?
 
-
+|       **The study only includes one frequency of exersize and it will be dificult to ensure compliance**
 
 
