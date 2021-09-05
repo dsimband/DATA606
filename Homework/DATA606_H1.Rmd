@@ -36,27 +36,27 @@ knitr::opts_chunk$set(echo = TRUE)
 
 (a) What does each row of the data matrix represent?
 
-|       **Each row of the matrix represents and indiviual with their demographic data, smoking status and region they live in.** 
+|       **Each row of the matrix represents and individual with their demographic data (sex, age, marital status, income), smoking behavior (during the week, and on weekends, type ) and the region they live in. I loaded the data and you get different answers. There are more colums in the xls file.** 
 
 (b) How many participants were included in the survey?
 
-|       **1693 observations were included in the data**
+|       **1693 observations were included in the data. I loaded the data and you get different answers. There are more rows in the xls file (1693 vs 1691-last row in the table).**
 
 (c) Indicate whether each variable in the study is numerical or categorical. If numerical, identify as continuous or discrete. If categorical, indicate if the variable is ordinal.
 
 
-|       **Sex - categorical**
-|       **Age - numerical & continuous**
-|       **Marital Status - categorical**
-|       **Highest Qualifications - categorical ordinal**
-|       **Nationality - categorical**
-|       **Ethnicity - categorical**
-|       **Gross Income - categorical ordinal**
-|       **Region - categorical**
-|       **Smoke? - categorical**
-|       **Amount Weekends - numerical & continuous**
-|       **Amount Weekdays - numerical & continuous**
-|       **Type - categorical**
+|       **Sex - categorical/nominal**
+|       **Age - numerical/continuous**
+|       **Marital Status - categorical/nominal**
+|       **Highest Qualifications - categorical/ordinal**
+|       **Nationality - categorical/nominal**
+|       **Ethnicity - categorical/nominal**
+|       **Gross Income - categorical/ordinal**
+|       **Region - categorical/nominal**
+|       **Smoke? - categorical/nominal**
+|       **Amount Weekends - numerical/continuous**
+|       **Amount Weekdays - numerical/continuous**
+|       **Type - categorical/nominal**
 
 ```{r, eval=FALSE, echo=FALSE}
 # NOTE: It is not absolutely necessary to load the data to answer these 
@@ -105,7 +105,10 @@ if the findings of the study can be used to establish causal relationships.
 
 Based on this study, can we conclude that smoking causes dementia later in life? Explain your reasoning.
 
-|       **no - the study finds a coorolation but does not assert any findings realted to causality. Although it concludes that there is a coorelation between smoking and dementia in later life it does not create a causal link**
+|       **Yes potentially - the researcher observed an association between smoking and dementia later in life. It also states that the analysis controlled for other factors that could be impacting the observations. So depending on how well the researcher controlled for other factors then we could say that the study proves the hypothesis.**  
+
+
+
 
 (b) Another article titled The School Bully Is Sleepy states the following:
 
@@ -113,7 +116,8 @@ Based on this study, can we conclude that smoking causes dementia later in life?
 
 A friend of yours who read the article says, "The study shows that sleep disorders lead to bullying in school children." Is this statement justified? If not, how best can you describe the conclusion that can be drawn from this study?
 
-|       **no - the study finds a coorolation but does not assert any findings realted to causality. Although it concludes that sleep disorders and bulling behavior are correlated it makes no assertions about a causal link.**
+|       **no - the study finds an association between sleep disorders and bullying behaviors. It however does not assert the direction of causality. The summary never states if bullying is the explanatory variable or a sleeping disorder is the explanatory variable. This was a observational study and thus did not include the necessary elements to prove causality (random assignments to a treatment and control group)**
+
 
 
 
@@ -129,12 +133,12 @@ A friend of yours who read the article says, "The study shows that sleep disorde
 
 (b) What are the treatment and control groups in this study?
 
-|       **treatment group - half the population that was instructed to exercise twice a week**
-|       **control - half the popluation that was instructed not to exercise**
+|       **treatment group - half the population of each category (18-30, 31-40 & 41-55) that was instructed to exercise twice a week**
+|       **control - half the population of each category (18-30, 31-40 & 41-55) that was instructed not to exercise**
 
 (c) Does this study make use of blocking? If so, what is the blocking variable?
 
-|       **this is not an example of blocking. the age groups are stratified** 
+|       **no the grouping of study participants is an example of stratified sampling** 
 
 (d) Does this study make use of blinding?
 
@@ -142,7 +146,7 @@ A friend of yours who read the article says, "The study shows that sleep disorde
 
 (e) Comment on whether or not the results of the study can be used to establish a causal rela- tionship between exercise and mental health, and indicate whether or not the conclusions can be generalized to the population at large.
 
-|       **yes because the mental health of treatment subjects is explored before and after the treatment period** 
+|       **yes - the study is an experiment that includes random assignment of subjects to either a treatment or control group and the mental health of treatment / control subjects is explored before and after the treatment period** 
 
 (f) Suppose you are given the task of determining if this proposed study should get funding. Would you have any reservations about the study proposal?
 
