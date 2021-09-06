@@ -6,9 +6,10 @@ output: openintro::lab_report
 ---
 
 ```{r load-packages, message=FALSE}
+library(dplyr)
 library(tidyverse)
 library(openintro)
-library(dplyr)
+
 
 data('arbuthnot', package='openintro')
 
@@ -23,7 +24,7 @@ arbuthnot$girls
 
 ### Exercise 2
 
-The number of girls baptized over the years trends to rise consistenlty with the exception of 20 years between 1640 and 1660 where we observe a drop in baptizms. 
+The number of girls baptized over the years trends to rise consistenlty with the exception of 20 years between 1640 and 1660 where we observe a drop in baptisms. 
 
 ```{r trend-girls}
 ggplot(data = arbuthnot, aes(x = year, y = girls)) + 

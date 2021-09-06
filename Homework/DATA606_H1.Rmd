@@ -86,7 +86,7 @@ smoking <- readxl::read_excel('11263-Smoking_tcm86-13253.xls')
 (b) Comment on whether or not the results of the study can be generalized to the population, and
 if the findings of the study can be used to establish causal relationships.
 
-|       **yes the findings from the sample group can be generalized to the population**
+|       **yes the findings from the sample group can be generalized to the population if the sample group of 160 children is a representation of the broader population**
 |       **yes the findings of the study could be used to establish a causal relationship**
 
 [^1]: Alessandro Bucciol and Marco Piovesan. "Luck or cheating? A field experiment on honesty with children". In: Journal of Economic Psychology 32.1 (2011), pp. 73-78. Available at https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1307694
@@ -116,7 +116,7 @@ Based on this study, can we conclude that smoking causes dementia later in life?
 
 A friend of yours who read the article says, "The study shows that sleep disorders lead to bullying in school children." Is this statement justified? If not, how best can you describe the conclusion that can be drawn from this study?
 
-|       **no - the study finds an association between sleep disorders and bullying behaviors. It however does not assert the direction of causality. The summary never states if bullying is the explanatory variable or a sleeping disorder is the explanatory variable. This was a observational study and thus did not include the necessary elements to prove causality (random assignments to a treatment and control group)**
+|       **no - the study finds an association between sleep disorders and bullying behaviors. It however does not assert the existence or direction of causality. The summary never states if bullying is the explanatory variable or a sleeping disorder is the explanatory variable. Also this was an observational study and thus did not include the necessary elements to prove causality (random assignments to a treatment and control group)**
 
 
 
@@ -142,14 +142,14 @@ A friend of yours who read the article says, "The study shows that sleep disorde
 
 (d) Does this study make use of blinding?
 
-|       **no the treatment group is clearly observable**
+|       **no the treatment group and the treatments are clearly observable**
 
 (e) Comment on whether or not the results of the study can be used to establish a causal rela- tionship between exercise and mental health, and indicate whether or not the conclusions can be generalized to the population at large.
 
-|       **yes - the study is an experiment that includes random assignment of subjects to either a treatment or control group and the mental health of treatment / control subjects is explored before and after the treatment period** 
+|       **yes - the study is an experiment that includes random assignment of subjects to either a treatment or control group and the mental health of treatment / control subjects is measured before and after the treatment period** 
 
 (f) Suppose you are given the task of determining if this proposed study should get funding. Would you have any reservations about the study proposal?
 
-|       **The study only includes one frequency of exersize and it will be dificult to ensure compliance**
+|       **Not based on the write-up provided. There is no indication of duration of study. It might require months or years to for exercise to impact mental health. The study only includes one frequency of exercise (would more frequent exercise change the results) and it will be difficult to ensure compliance (exercise when they are supposed to and refrain from exercise for the duration of the experiment).**
 
 
