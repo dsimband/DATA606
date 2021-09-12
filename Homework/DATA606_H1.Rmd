@@ -81,7 +81,7 @@ smoking <- readxl::read_excel('11263-Smoking_tcm86-13253.xls')
 (a) Identify the population of interest and the sample in this study.
 
 |       **population of interest: children between the ages of 5 and 15**
-|       **the sample population was 160 children between the ages of 5 and 15**
+|       **the sample population was 160 children between the ages of 5 and 15** 
 
 (b) Comment on whether or not the results of the study can be generalized to the population, and
 if the findings of the study can be used to establish causal relationships.
