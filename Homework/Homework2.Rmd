@@ -2,9 +2,14 @@
 title: "Chapter 2 - Summarizing Data"
 author: "David Simbandumwe"
 output:
-    pdf_document:
-        extra_dependencies: ["geometry", "multicol", "multirow"]
-editor_options: 
+  html_document:
+    df_print: paged
+  pdf_document:
+    extra_dependencies:
+    - geometry
+    - multicol
+    - multirow
+editor_options:
   chunk_output_type: console
 ---
 
@@ -75,7 +80,7 @@ boxPlot(uni, xlab = "(3)", ylab = "", col = COL[1,3])
 
 ### Question 2
 
-** a = 2
+**a = 2
    b = 3
    c = 1**
 
@@ -212,18 +217,13 @@ or phrase, whichever is appropriate.
 
 ```{r}
 
-heart_transplant %>%
-  summarise(survivalCount = sum(survived == 'dead'))
 
-heart_transplant %>%
-  summarise(survivalCount = sum(survived == 'alive'))
-
-heart_transplant %>%
-  summarise(transplantCount = sum(transplant == 'control'))
-
-heart_transplant %>%
-  summarise(transplantCount = sum(transplant == 'treatment'))
-
+h_trans <- heart_transplant %>% 
+  group_by(survived,transplant) %>%
+  summarize(
+    count = n()
+  )
+h_trans
 
 ```
 
@@ -274,10 +274,6 @@ for(i in 1:length(diffs)){
 \end{center}
 
 
-**
-
-The results of the simulation suggest that the treatment increases the likelihood of survival for the patient. 
-
-**
+**The results of the simulation suggest that the treatment increases the likelihood of survival for the patient.**
 
 
