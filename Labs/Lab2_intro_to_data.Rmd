@@ -122,7 +122,7 @@ ggplot(data = nycflights, aes(x = dep_delay)) +
 
 ### Answer Questions 1
 
-**- The 2nd histogram with the bin width of 15 is the most detailed. The default bin width of 15 is used for the first histogram. And the final histogram uses a bin width of 150 that obscures most of the variation in departure time. 
+**- The 2nd histogram with the bin width of 15 is the most detailed. The default bin width of 30 is used for the first histogram. And the final histogram uses a bin width of 150 that obscures most of the variation in departure time. 
 - Using a bin width of 15 you can see that some of the flights leave ahead of schedule.Roughly the same number of flight leave between 1 and 15min ahead of schedule when compared to the number of flights of leave 1min to 15min late. This detail is obscured when using the default bin width of 30 and the bin width of 150.**
 
 
@@ -243,13 +243,15 @@ Here, we first grouped the data by `origin` and then calculated the summary stat
     
 ### Answer Questions 1a
 
-** - AA**
+**- DL and UA have the largest interquartile range (22)**
     
     
 ```{r answers questions 1a}
 sfo_feb_flights %>%
   group_by(carrier) %>%
-  summarise(median_dd = median(dep_delay), iqr_dd = IQR(dep_delay), n_flights = n())
+  summarise(median_ad = median(arr_delay), 
+            iqr_ad = IQR(arr_delay), 
+            n_flights = n())
 ```
     
 
