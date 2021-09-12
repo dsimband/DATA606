@@ -2,14 +2,17 @@
 title: "Chapter 2 - Summarizing Data"
 author: "David Simbandumwe"
 output:
+  pdf_document: default
   html_document:
-    df_print: paged
-  pdf_document:
-    extra_dependencies:
-    - geometry
-    - multicol
-    - multirow
-editor_options:
+    includes:
+      in_header: ./assets/header.html
+    css: ./assets/mtheme_max.css
+    highlight: pygments
+    theme: cerulean
+    toc: true
+    toc_float: true
+editor_options: 
+  
   chunk_output_type: console
 ---
 
@@ -80,9 +83,10 @@ boxPlot(uni, xlab = "(3)", ylab = "", col = COL[1,3])
 
 ### Question 2
 
-**a = 2
-   b = 3
-   c = 1**
+
+    *a = 2
+    *b = 3
+    *c = 1
 
 
 
@@ -94,40 +98,32 @@ boxPlot(uni, xlab = "(3)", ylab = "", col = COL[1,3])
 
 (a) Housing prices in a country where 25% of the houses cost below $350,000, 50% of the houses cost below $450,000, 75% of the houses cost below $1,000,000 and there are a meaningful number of houses that cost more than $6,000,000.
 
-**
-distribution: right skewed
-typical observation: median
-variability: IQR
++ distribution: right skewed
++ typical observation: median
++ variability: IQR
 
-**
 
 (b) Housing prices in a country where 25% of the houses cost below $300,000, 50% of the houses cost below $600,000, 75% of the houses cost below $900,000 and very few houses that cost more than $1,200,000.
 
-**
-distribution: symmetric
-typical observation: mean
-variability: standard deviation
++ distribution: symmetric
++ typical observation: mean
++ variability: standard deviation
 
-**
 
 (c) Number of alcoholic drinks consumed by college students in a given week. Assume that most of these students don't drink since they are under 21 years old, and only a few drink excessively.
 
-**
-distribution: left skewed
-typical observation: median
-variability: IQR
++ distribution: left skewed
++ typical observation: median
++ variability: IQR
 
-**
 
 (d) Annual salaries of the employees at a Fortune 500 company where only a few high level
 executives earn much higher salaries than the all other employees.
 
-**
-distribution: right skewed
-typical observation: median
-variability: IQR
++ distribution: right skewed
++ typical observation: median
++ variability: IQR
 
-**
 
 
 
@@ -167,19 +163,16 @@ summary(heart_transplant %>% filter(transplant == "control"))
 
 **
 From the data it appears that survival is dependent on if a patient receives a transplant. The median and mean of the treatment group are higher than 
-- treatment mean 415.4 vs control mean 96.62 and treatment median 207.0 vs control median 21.0
-- also the first and the 3rd quartile are higher. with the 3rd quartile being substantially higher in the treatment group meaning that 75% of the patients live substantially longer than control group patients. 
+*treatment mean 415.4 vs control mean 96.62 and treatment median 207.0 vs control median 21.0
+*also the first and the 3rd quartile are higher. with the 3rd quartile being substantially higher in the treatment group meaning that 75% of the patients live substantially longer than control group patients. 
 
 **
 
 
 (b) What do the box plots below suggest about the efficacy (effectiveness) of the heart transplant treatment.
 
-**
++The plots indicate that having a heart transplat substantially increase the median survival time and the overall survival time for 75% of the treatment group. 
 
-The plots indicate that having a heart transplat substantially increase the median survival time and the overall survival time for 75% of the treatment group. 
-
-**
 
 (c) What proportion of patients in the treatment group and what proportion of 
 patients in the control group died?
@@ -193,22 +186,17 @@ heart_transplant %>%
 
 ```
 
+* control: 88.2% died
+* treatment: 65.2% died
 
-**
-
-control: 88.2% died
-treatment: 65.2% died
-
-**
 
 (d) One approach for investigating whether or not the treatment is effective 
 is to use a randomization technique.
 
 i. What are the claims being tested?
 
-**
-Does a heart transplant increase the likelihood of survival or increase the patients lifespan?
-**
++ Does a heart transplant increase the likelihood of survival or increase the patients lifespan?
+
 
 ii. The paragraph below describes the set up for such approach, if we were 
 to do it without using statistical software. Fill in the blanks with a number 
@@ -276,4 +264,7 @@ for(i in 1:length(diffs)){
 
 **The results of the simulation suggest that the treatment increases the likelihood of survival for the patient.**
 
+
+This document is available at [[**RPubs**]](https://rpubs.com/dsimbandumwe/808283)
+and on [[**Github**]](https://github.com/dsimband/DATA606/blob/1b16c2d9672058cec0f416b968d8a66c2bc0d80a/Homework/Homework2.Rmd)
 
