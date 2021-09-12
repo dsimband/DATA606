@@ -5,8 +5,8 @@ output:
   pdf_document: default
   html_document:
     includes:
-      in_header: header.html
-    css: ./lab.css
+      in_header: ./assets/header.html
+    css: ./assets/mtheme_max.css
     highlight: pygments
     theme: cerulean
     toc: true
@@ -401,4 +401,5 @@ dl_aa_ua %>%
 ```
 
 
-
+This document is available at [[**RPubs**]](https://rpubs.com/dsimbandumwe/808292)
+and on [[**Github**]](https://github.com/dsimband/DATA606/blob/1b16c2d9672058cec0f416b968d8a66c2bc0d80a/Labs/Lab2_intro_to_data.Rmd)
