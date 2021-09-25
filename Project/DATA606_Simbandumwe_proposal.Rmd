@@ -1,0 +1,165 @@
+---
+title: DATA 606 Data Project Proposal
+author: 'David Simbandumwe'
+output:
+  html_document:
+    df_print: paged
+  pdf_document:
+    extra_dependencies:
+    - geometry
+    - multicol
+    - multirow
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("VennDiagram")
+library(tidyverse)
+library(readtext)
+library(lubridate)
+
+```
+
+
+
+
+### Data Preparation
+
+```{r}
+# load data
+
+crdt_df <- read_csv( file = "./CRDT_Data_CRDT.csv")
+rt_df <- read_csv( file = "./rt.csv")
+```
+
+
+### Research question 
+
+**You should phrase your research question in a way that matches up with the scope of inference your dataset allows for.**
+
+Is race a determination factor in the likelihood of contracting COVID, being hospitalized or dying from COVID related medical complications. 
+
+
+### Cases 
+
+**What are the cases, and how many are there?**
+
+There are 5320 unique cases identified by state and the specific date
+
+### Data collection 
+
+**Describe the method of data collection.**
+
+The data was collected as part of the The COVID Racial Data Tracker project. The COVID Racial Data Tracker is a collaboration between the COVID Tracking Project and the Boston University Center for Antiracist Research. Together, we’re gathering the most complete and up-to-date race and ethnicity data on COVID-19 in the United States.
+
+We’ve asked every state to report complete race and ethnicity data. Our Racial Data Dashboard has the latest.
+
+
+### Type of study 
+
+**What type of study is this (observational/experiment)?**
+
+This is an observational study based on actual data reported by the 51 states / territorie.
+
+
+### Data Source 
+
+**If you collected the data, state self-collected. If not, provide a citation/link.**
+
+The data was collected as part of the Covid Tracking Project https://covidtracking.com/data. For this project the data was downloaded as csv file for processing. 
+
+
+Atlantic Monthly Group LLC (“The Atlantic”) 2021. 2021-03 [*The COVID Tracking Project at The Atlantic*](https://assets.ctfassets.net/o2ll9t4ee8tq/5P2QPF674OD1TGHUrVABx3/85a456045efa0d70ad42d9bf14c3beb0/CDC_Report_CTP.pdf) 
+
+
+### Dependent Variable
+
+**What is the response variable? Is it quantitative or qualitative?**
+
+The response variable is the number of cases, deaths and hospitalizations
+
+
+### Independent Variable
+
+**You should have two independent variables, one quantitative and one qualitative.**
+The independent variable is the race of the observations and it is qualitative / categorical
+
+
+### Relevant summary statistics 
+
+**Provide summary statistics for each the variables. Also include appropriate visualizations related to your research question (e.g. scatter plot, boxplots, etc). This step requires the use of R, hence a code chunk is provided below. Insert more code chunks as needed.**
+
+```{r}
+
+summary(crdt_df)
+
+death_df <- crdt_df %>% 
+  filter(Date > 20200101) %>%
+  replace_na(list(Deaths_Total=0, Deaths_White=0, Deaths_Black=0, Deaths_Latinx=0, Deaths_Multiracial=0  )) %>%
+  group_by(Date) %>% 
+  mutate(
+    date = ymd(Date),
+    death_total = sum(Deaths_Total, na_rm=FALSE),
+    death_white_total = sum(Deaths_White, na_rm=FALSE),
+    death_black_total = sum(Deaths_Black, na_rm=FALSE),
+    death_latinx_total = sum(Deaths_Latinx, na_rm=FALSE),
+    death_multi_total = sum(Deaths_Multiracial, na_rm=FALSE)
+  ) %>%
+  select (date, death_total, death_white_total, death_black_total,death_latinx_total,death_multi_total) %>%
+  distinct() 
+
+summary(death_df)
+
+
+ggplot(data = death_df) + 
+  geom_line(mapping = aes(x=date, y=death_total, color="death_total")) +
+  geom_line(mapping = aes(x=date, y=death_white_total, color="death white")) + 
+  geom_line(mapping = aes(x=date, y=death_black_total, color="death black")) +
+  geom_line(mapping = aes(x=date, y=death_latinx_total, color="death latinx")) +
+  geom_line(mapping = aes(x=date, y=death_multi_total, color="death multi"))
+  
+
+  
+```
+
+
+
+
+
+```{r}
+
+summary(rt_df)
+
+
+rt_ny_df <- rt_df %>%
+  filter(region == "NY") 
+  
+death_ny_df <- crdt_df %>% 
+  filter(Date > 20200101, State=="NY") %>%
+   mutate(
+    date = ymd(Date)
+   ) %>%
+  replace_na(list(Deaths_Total=0, Deaths_White=0, Deaths_Black=0, Deaths_Latinx=0, Deaths_Multiracial=0  ))
+
+
+ggplot(data = death_ny_df) + 
+  geom_line(mapping = aes(x=date, y=Deaths_Total, color="death_total")) +
+  geom_line(mapping = aes(x=date, y=Deaths_White, color="death white")) + 
+  geom_line(mapping = aes(x=date, y=Deaths_Black, color="death black")) +
+  geom_line(mapping = aes(x=date, y=Deaths_Latinx, color="death latinx")) +
+  geom_line(mapping = aes(x=date, y=Deaths_Multiracial, color="death multi"))
+
+ggplot(data = rt_ny_df) + 
+  geom_line(mapping = aes(x=date, y=mean))
+
+  
+
+
+
+
+  
+
+```
+
+
