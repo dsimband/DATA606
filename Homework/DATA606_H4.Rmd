@@ -14,33 +14,85 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
+library(tidyverse)
 ```
 
 **Area under the curve, Part I**. (4.1, p. 142) What percent of a standard normal distribution $N(\mu=0, \sigma=1)$ is found in each region? Be sure to draw a graph.
 
-(a) $Z < -1.35$
+
 ```{r}
-pnorm(-1.35)
+normal_area <- function(mean = 0, sd = 1, lb, ub, acolor = "lightgray", ...) {
+    x <- seq(mean - 3 * sd, mean + 3 * sd, length = 100) 
+    
+    if (missing(lb)) {
+        lb <- min(x)
+    }
+    if (missing(ub)) {
+        ub <- max(x)
+    }
+    
+    x2 <- seq(lb, ub, length = 100)    
+    plot(x, dnorm(x, mean, sd), type = "n", ylab = "")
+    
+    y <- dnorm(x2, mean, sd)
+    polygon(c(lb, x2, ub), c(0, y, 0), col = acolor)
+    lines(x, dnorm(x, mean, sd), type = "l", ...)
+}
+
+
 ```
 
+
+
+
+
+(a) $Z < -1.35$
+
 area under the curve 8.9%
+
+```{r}
+pnorm(-1.35)
+
+normal_area(mean = 0, sd = 1, lb = -3, ub = -1.35, lwd = 2)
+
+```
+
+
 
 
 
 (b) $Z > 1.48$
+
+area under the curve 6.9%
+
 ```{r}
-1 - pnorm(1.35)
+1 - pnorm(1.48)
+
+normal_area(mean = 0, sd = 1, lb = 1.48, ub = 3, lwd = 2)
+
 ```
+
+
 
 (c) $-0.4 < Z < 1.5$
 
+area under the curve 58.8%
+
 ```{r}
 pnorm(1.5) - pnorm(-0.4)
+
+normal_area(mean = 0, sd = 1, lb = -0.4, ub = 1.5, lwd = 2)
+
 ```
 
 (d) $|Z| > 2$
+
+area under the curve 4.6%
+
 ```{r}
 pnorm(-2) + 1 - pnorm(2)
+
+normal_area(mean = 0, sd = 1, lb = -2, ub = 2, lwd = 2)
 
 ```
 
@@ -70,10 +122,11 @@ Remember: a better performance corresponds to a faster finish.
 
 (a) Write down the short-hand for these two normal distributions.
 
+Men - N($\mu$ = 4313 $\sigma$ = 538)
+Women - N($\mu$ = 5261 $\sigma$ = 807)
 
 
 (b) What are the Z-scores for Leo's and Mary's finishing times? What do these Z-scores tell you?
-
 
 ```{r, echo=FALSE}
 # z score for Leo
@@ -85,6 +138,7 @@ Remember: a better performance corresponds to a faster finish.
 
 Leo z score = 1.089
 Mary z score = 0.312
+
 
 (c) Did Leo or Mary rank better in their respective groups? Explain your reasoning.
 
@@ -143,7 +197,7 @@ pnorm(q = 5513 , mean = 5261, sd = 807)
 
 (a) The mean height is 61.52 inches with a standard deviation of 4.58 inches. Use this information to determine if the heights approximately follow the 68-95-99.7% Rule.
 
-**yes - the height is normal distributed**
+**yes - the height approximates the distribution rules for a normal distribution**
 
 
 ```{r}
@@ -197,6 +251,15 @@ height_df %>%
 (b) Do these data appear to follow a normal distribution? Explain your reasoning using the graphs provided below.
 
 **no - based on the graph it appears that the data is right skewed**
+
+```{r}
+
+  ggplot(data = height_df , aes(x = height)) +
+  geom_histogram(bins = 20)
+
+```
+
+
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.show="hold", out.width="50%", fig.height=3}
