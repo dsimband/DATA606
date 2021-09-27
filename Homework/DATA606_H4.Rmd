@@ -2,45 +2,23 @@
 title: "Chapter 4 - Distributions of Random Variables"
 author: "David Simbandumwe"
 output:
+  html_document:
+    df_print: paged
   pdf_document:
     extra_dependencies:
     - geometry
     - multicol
     - multirow
-  html_document:
-    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(tidyverse)
+library(DATA606)
 ```
 
 **Area under the curve, Part I**. (4.1, p. 142) What percent of a standard normal distribution $N(\mu=0, \sigma=1)$ is found in each region? Be sure to draw a graph.
-
-
-```{r}
-normal_area <- function(mean = 0, sd = 1, lb, ub, acolor = "lightgray", ...) {
-    x <- seq(mean - 3 * sd, mean + 3 * sd, length = 100) 
-    
-    if (missing(lb)) {
-        lb <- min(x)
-    }
-    if (missing(ub)) {
-        ub <- max(x)
-    }
-    
-    x2 <- seq(lb, ub, length = 100)    
-    plot(x, dnorm(x, mean, sd), type = "n", ylab = "")
-    
-    y <- dnorm(x2, mean, sd)
-    polygon(c(lb, x2, ub), c(0, y, 0), col = acolor)
-    lines(x, dnorm(x, mean, sd), type = "l", ...)
-}
-
-
-```
 
 
 
@@ -53,7 +31,7 @@ area under the curve 8.9%
 ```{r}
 pnorm(-1.35)
 
-normal_area(mean = 0, sd = 1, lb = -3, ub = -1.35, lwd = 2)
+normal_plot(mean = 0, sd = 1, cv = c(-1.35), tails = "less" )
 
 ```
 
@@ -68,7 +46,7 @@ area under the curve 6.9%
 ```{r}
 1 - pnorm(1.48)
 
-normal_area(mean = 0, sd = 1, lb = 1.48, ub = 3, lwd = 2)
+normal_plot(mean = 0, sd = 1, cv = c(1.48), tails = "greater" )
 
 ```
 
@@ -76,13 +54,12 @@ normal_area(mean = 0, sd = 1, lb = 1.48, ub = 3, lwd = 2)
 
 (c) $-0.4 < Z < 1.5$
 
-area under the curve 58.8%
+area under the curve 58.9%
 
 ```{r}
 pnorm(1.5) - pnorm(-0.4)
 
-normal_area(mean = 0, sd = 1, lb = -0.4, ub = 1.5, lwd = 2)
-
+normal_plot(mean = 0, sd = 1, cv = c(-0.4,1.5), tails = "no" )
 ```
 
 (d) $|Z| > 2$
@@ -92,7 +69,7 @@ area under the curve 4.6%
 ```{r}
 pnorm(-2) + 1 - pnorm(2)
 
-normal_area(mean = 0, sd = 1, lb = -2, ub = 2, lwd = 2)
+normal_plot(mean = 0, sd = 1, cv = c(-2,2), tails = "two.sided" )
 
 ```
 
@@ -282,8 +259,7 @@ qqline(heights, col = COL[1])
 
 ```{r}
 # Use the DATA606::qqnormsim function
-
-qqnormsim(sample = height, data = height_df)
+qqnormsim(dat = height_df$height)
 
 ```
 
