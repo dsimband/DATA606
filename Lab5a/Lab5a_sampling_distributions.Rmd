@@ -88,6 +88,8 @@ If you are interested in estimating the proportion of people who don't think the
 ```{r samp1}
 samp1 <- global_monitor %>%
   sample_n(50)
+
+samp1
 ```
 
 This command collects a simple random sample of size 50 from the `global_monitor` dataset, and assigns the result to `samp1`. This is similar to randomly drawing names from a hat that contains the names of all in the population. Working with these 50 names is considerably simpler than working with all 100,000 people in the population.
@@ -106,14 +108,15 @@ ggplot(samp1, aes(x = scientist_work)) +
 
 
 samp1 %>%
-  group_by(scientist_work) %>%
-  summarize(
-    count = n(),
-    avg = n() / nrow(samp1)
-  )
+  count(scientist_work) %>%
+  mutate(p_hat = n /sum(n))
+
 
 
 ```
+
+- **The distribution of the sample is similar to the population. There are slightly fewer individuals in the sample that believe that science benefits them.**
+
 
 
 If you're interested in estimating the proportion of all people who do not believe that the work scientists do benefits them, but you do not have access to the population data, your best single guess is the sample mean.
@@ -139,22 +142,14 @@ samp1_p_hat <- samp1 %>%
 Depending on which 50 people you selected, your estimate could be a bit above or a bit below the true population proportion of `r samp1_p_hat`. In general, though, the sample proportion turns out to be a pretty good estimate of the true population proportion, and you were able to get it by sampling less than 1% of the population.
 
 2.  Would you expect the sample proportion to match the sample proportion of another student's sample? Why, or why not? If the answer is no, would you expect the proportions to be somewhat different or very different? Ask a student team to confirm your answer.
-
-**yes - if the student uses the same seed to initialze the random function. no otherwise. The number should be fairly close**
-
-```{r}
-
-p <- 0.2
-n <- .5
-
-(p*(1-p)/n)^0.5
-
-```
+- **no - The number should be fairly close but will have some variability. close to the standard distribution**
 
 
 3.  Take a second sample, also of size 50, and call it `samp2`. How does the sample proportion of `samp2` compare with that of `samp1`? Suppose we took two more samples, one of size 100 and one of size 1000. Which would you think would provide a more accurate estimate of the population proportion?
 
 ```{r}
+set.seed(787)
+
 
 # select 50
 samp2 <- global_monitor %>%
@@ -182,6 +177,10 @@ samp4 %>%
   mutate(p_hat = n /sum(n))
 
 ```
+
+- **the sample proportions are slightly different (sample1 74% benefits and in sample2 78% benefits)  **
+- **the larger sample will be a more accurate estimate**
+
 
 Not surprisingly, every time you take another random sample, you might get a different sample proportion. It's useful to get a sense of just how much variability you should expect when estimating the population mean this way. The distribution of sample proportions, called the *sampling distribution (of the proportion)*, can help you understand this variability. In this lab, because you have access to the population, you can build up the sampling distribution for the sample proportion by repeating the above steps many times. Here, we use R to take 15,000 different samples of size 50 from the population, calculate the proportion of responses in each sample, filter for only the *Doesn't benefit* responses, and store each result in a vector called `sample_props50`. Note that we specify that `replace = TRUE` since sampling distributions are constructed by sampling with replacement.
 
@@ -220,6 +219,17 @@ sd(sample_props50$p_hat)
 library(psych)
 describe(sample_props50)
 
+
+
+ggplot(data = sample_props50, aes(x = p_hat)) +
+  geom_histogram(binwidth = 0.009) +
+  labs(
+    x = "p_hat (Doesn't benefit)",
+    title = "Sampling distribution of p_hat",
+    subtitle = "Sample size = 50, Number of samples = 15000"
+  )
+
+
 ```
 
 
@@ -245,6 +255,32 @@ as well as store the resulting sample proportions each time in a separate vector
 Note that for each of the 15,000 times we computed a proportion, we did so from a **different** sample!
 
 5. To make sure you understand how sampling distributions are built, and exactly what the `rep_sample_n` function does, try modifying the code to create a sampling distribution of **25 sample proportions** from **samples of size 10**, and put them in a data frame named `sample_props_small`. Print the output. How many observations are there in this object called `sample_props_small`? What does each observation represent?
+
+```{r}
+
+sample_props_small <- global_monitor %>%
+                    rep_sample_n(size = 10, reps = 25, replace = TRUE) %>%
+                    count(scientist_work) %>%
+                    mutate(p_hat = n /sum(n)) %>%
+                    filter(scientist_work == "Doesn't benefit")
+
+
+(sample_props_small)
+
+
+sample_props_small2 <- global_monitor %>%
+                    rep_sample_n(size = 10, reps = 25, replace = TRUE) %>%
+                    count(scientist_work) %>%
+                    mutate(p_hat = n /sum(n)) %>%
+                    filter(scientist_work == "Benefits")
+
+
+(sample_props_small2)
+
+```
+
+- **21 observations. each observation represents the proportion of individual "doesn't benefit" samples.If a record is missing for a sample then all individual samples had the value "Benefits"**
+
 
 ## Sample size and the sampling distribution
 
@@ -368,10 +404,12 @@ Note that while you might be able to answer some of these questions using the ap
     Using this sample, what is your best point estimate of the population proportion 
     of people who think the work scientists do enchances their lives?
     
-    ** 80% is the best estimate **    
+    ** 86.7% is the best estimate**    
   
     
 ```{r}
+
+set.seed(7837)
 
 global_monitor %>%
   sample_n(size = 15, replace = TRUE) %>%
@@ -391,10 +429,13 @@ global_monitor %>%
     true proportion of those who think the work scientists do enchances their lives 
     to be? Finally, calculate and report the population proportion.
     
-    ** I would assume the true proportions would be slighly over the 80% **
+- **shape - right skewed but close to a normal distribution** 
+- **proportion - 80.2% believe science enhances their lives**
+- **population proportion - 80.0% believe science enhances their lives**
+
     
 ```{r}
-
+set.seed(7837)
 sample_props15 <- global_monitor %>%
                     rep_sample_n(size = 15, reps = 2000, replace = TRUE) %>%
                     count(scientist_work) %>%
@@ -409,12 +450,16 @@ ggplot(data = sample_props15, aes(x = p_hat)) +
     subtitle = "Sample size = 15, Number of samples = 2000"
   )
 
+#sample
+summary(sample_props15$p_hat)
 
-sample_props15 %>%  
+#population
+global_monitor %>%  
   group_by(scientist_work) %>%
   summarize(
-    avg = sum(p_hat) / n()
+    p =  n() / nrow(global_monitor)
   )
+
 
 
 ```
@@ -428,13 +473,14 @@ sample_props15 %>%
     be the true proportion of those who think the work scientists do enchances 
     their lives?
     
-    ** I would guess the true proportions were 80% **
+  - **shape - normally distributed**
+  - **I would guess the true proportions were 80.03% or 80%**
     
 ```{r}
 
-
+set.seed(7837)
 sample_props150 <- global_monitor %>%
-                    rep_sample_n(size = 15, reps = 150, replace = TRUE) %>%
+                    rep_sample_n(size = 150, reps = 2000, replace = TRUE) %>%
                     count(scientist_work) %>%
                     mutate(p_hat = n /sum(n)) %>%
                     filter(scientist_work == "Benefits")
@@ -444,22 +490,31 @@ ggplot(data = sample_props150, aes(x = p_hat)) +
   labs(
     x = "p_hat (Benefits)",
     title = "Sampling distribution of p_hat",
-    subtitle = "Sample size = 15, Number of samples = 150"
+    subtitle = "Sample size = 150, Number of samples = 2000"
   )
 
 
-sample_props150 %>%  
-  group_by(scientist_work) %>%
-  summarize(
-    avg = sum(p_hat) / n()
-  )
+#sample
+summary(sample_props150$p_hat)
+
+
 
 ```
 
 10.  Of the sampling distributions from 2 and 3, which has a smaller spread?  If
     you're concerned with making estimates that are more often close to the 
     true value, would you prefer a sampling distribution with a large or small spread?
-    
-    ** the sampling distribution from 9 is smaller than the sampling distribution from 8**
+  
+```{r}
+#sample distribution 2
+summary(sample_props15$p_hat) 
+sd(sample_props15$p_hat)
+
+# sample distribution 3
+summary(sample_props150$p_hat) 
+sd(sample_props150$p_hat)
+```
+  
+-**the sampling distribution is smaller if you use a larger samples size. when we go from 15 to 150 the distributions is smaller**
 
 * * *
