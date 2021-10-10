@@ -86,6 +86,7 @@ us_adults %>%
 In this lab, you'll start with a simple random sample of size 60 from the population.
 
 ```{r sample}
+
 n <- 60
 samp <- us_adults %>%
   sample_n(size = n)
@@ -95,7 +96,7 @@ samp %>%
   group_by(climate_change_affects) %>%
   summarise(
     n = n(),
-    p = n / nrow(samp)
+    p_hat = n / nrow(samp)
   )
   
   
@@ -106,14 +107,14 @@ samp %>%
     the proportion of those **in this sample** who think climate change affects their 
     local community.
     
-- ** 37 **
+- **61.7% think climate change affects their community **
     
     
 
 1.  Would you expect another student's sample proportion to be identical to yours? 
     Would you expect it to be similar? Why or why not?
     
-- ** Since this is a quasi random sample the proportions will be different unless they us the same seed**
+- **no - Since this is a quasi random sample the proportions will be different unless they us the same seed**
 
 
 
@@ -180,7 +181,7 @@ In this case, you have the rare luxury of knowing the true population proportion
     proportion of those intervals would you expect to capture the true population 
     mean? Why?
     
-- **95% **
+- **95%**
 
 
 
@@ -321,7 +322,7 @@ shinyApp(
     interval at this level to me wider or narrower than the confidence interval 
     you calculated at the 95% confidence level? Explain your reasoning.
     
-- **wider **
+- **wider - i chose 98% confidence **
 
 ![Facebook Plot](./facebook_plot98.png)
     
