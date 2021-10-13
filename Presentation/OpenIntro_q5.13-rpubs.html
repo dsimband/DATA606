@@ -513,7 +513,7 @@ body {
 
 
 .reveal {
-  font-family: "Lato", sans-serif;
+  font-family: 'Helvetica', sans-serif;
 }
   
 .reveal h1,
@@ -522,7 +522,7 @@ body {
 .reveal h4,
 .reveal h5,
 .reveal h6 {
-  font-family: "News Cycle", Impact, sans-serif;
+  font-family: 'Helvetica', Impact, sans-serif;
 }
 
 
@@ -786,11 +786,40 @@ hljs.initHighlightingOnLoad();
 <div class="slideContent" >
 <p>Check any conditions required for constructing a confidence interval.</p>
 
+<p><strong>1. Independence: Sampled observations must be independent</strong></p>
+
 <ul>
-<li><strong>confidence interval = 95% or 90% or 99%</strong></li>
-<li><strong>point estimate = \( success/n \) = \( 64/752 \)</strong></li>
-<li><strong>standard error = \( SE = \sqrt{p(1-p)/n} \) = \( SE = \sqrt{8.5% * (1-8.5%) / 64} \)</strong> </li>
+<li><strong>random sampling/assignment is used, and</strong></li>
+<li><strong>if sampling without replacement, n &lt; 10% of the population.</strong></li>
 </ul>
+
+<p><strong>2. Sample size: There should be at least 10 expected successes and 10 expected failures in the observed sample.</strong>  <strong>{np &gt;= 10}</strong> - <strong>{n(1-p) &gt;= 10}</strong></p>
+
+</div>
+
+</section>
+<section data-transition="linear" data-transition-speed="default">
+
+<div class="slideContent noTitle" >
+<pre><code class="r">n &lt;- 752
+x &lt;- 64
+(p_hat &lt;- x/n)
+</code></pre>
+
+<pre><code>[1] 0.08510638
+</code></pre>
+
+<pre><code class="r">(p_hat * n &gt;= 10)
+</code></pre>
+
+<pre><code>[1] TRUE
+</code></pre>
+
+<pre><code class="r">(n * (1 - p_hat) &gt;= 10)
+</code></pre>
+
+<pre><code>[1] TRUE
+</code></pre>
 
 </div>
 
@@ -800,13 +829,18 @@ hljs.initHighlightingOnLoad();
 <div class="slideContent" >
 <p>Compute the standard error.</p>
 
+<p><strong>\( SE = \sqrt{p(1-p)/n} \)</strong></p>
+
 <pre><code class="r">x &lt;- 64
 n &lt;- 752
 
-p_hat = x/n
-se = round(sqrt(p_hat * ( 1 - p_hat) / n),4)
+(p_hat = x/n)
+</code></pre>
 
-se
+<pre><code>[1] 0.08510638
+</code></pre>
+
+<pre><code class="r">(se = round(sqrt(p_hat * ( 1 - p_hat) / n),4))
 </code></pre>
 
 <pre><code>[1] 0.0102
@@ -820,12 +854,18 @@ se
 <div class="slideContent" >
 <p>Construct and interpret a 90% confidence interval for the fraction of first-time visitors of the site who would register under the new design (assuming stable behaviors by new visitors over time).</p>
 
-<pre><code class="r">z &lt;- -round(qnorm(0.05), 2)
-ci &lt;- c( round(p_hat - z * se,4),round(p_hat + z * se,4))
-ci
+<p><strong>p_hat (+/-) z * se</strong></p>
+
+<pre><code class="r">(z &lt;- -qnorm(0.05))
 </code></pre>
 
-<pre><code>[1] 0.0684 0.1018
+<pre><code>[1] 1.644854
+</code></pre>
+
+<pre><code class="r">(ci &lt;- c( round(p_hat - z * se,4),round(p_hat + z * se,4)))
+</code></pre>
+
+<pre><code>[1] 0.0683 0.1019
 </code></pre>
 
 </div>

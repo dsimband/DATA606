@@ -2,7 +2,6 @@
 title: "Inference for categorical data"
 author: "David Simbandumwe"
 output:
-  pdf_document: default
   html_document:
     includes:
       in_header: header.html
@@ -11,6 +10,7 @@ output:
     theme: cerulean
     toc: true
     toc_float: true
+  pdf_document: default
 editor_options: 
   chunk_output_type: console
 ---
@@ -38,16 +38,36 @@ library(infer)
 
 ### The data
 
+```{r}
+rm(list=ls())
+data('yrbss', package='openintro')
+
+```
+
+
 You will be analyzing the same dataset as in the previous lab, where you delved into a sample from the Youth Risk Behavior Surveillance System (YRBSS) survey, which uses data from high schoolers to help discover health patterns. The dataset is called `yrbss`.
 
 1.   What are the counts within each category for the amount of days these students have texted while driving within the past 30 days?
+
+```{r}
+
+yrbss %>%
+  group_by(text_while_driving_30d) %>%
+  mutate(count = n()) %>%
+  select(text_while_driving_30d, count) %>%
+  distinct() %>%
+  arrange(count)
+
+
+```
+
 
 2.  What is the proportion of people who have texted while driving every day in the past 30 days and never wear helmets?
 
 Remember that you can use `filter` to limit the dataset to just non-helmet wearers. Here, we will name the dataset `no_helmet`.
 
 ```{r no helmet}
-data('yrbss', package='openintro')
+
 no_helmet <- yrbss %>%
   filter(helmet_12m == "never")
 ```
@@ -57,7 +77,45 @@ Also, it may be easier to calculate the proportion if you create a new variable 
 ```{r indicator-texting}
 no_helmet <- no_helmet %>%
   mutate(text_ind = ifelse(text_while_driving_30d == "30", "yes", "no"))
+
+no_helmet2 <- no_helmet %>% drop_na(text_ind)
+
+
+# no_helmet <- no_helmet %>%
+#   mutate(text_ind = ifelse(is.na(text_while_driving_30d), "no" ,
+#     ifelse(
+#      text_while_driving_30d == "30", "yes", "no")
+#     )
+#   )
+
+
 ```
+
+
+```{r}
+
+no_helmet %>% select(text_ind) %>% distinct()
+
+no_helmet %>%
+  count(text_ind) %>%
+  transmute(
+    text_ind,
+    p = n / sum(n)
+  )
+
+
+no_helmet2 %>% select(text_ind) %>% distinct()
+
+no_helmet2 %>%
+  count(text_ind) %>%
+  transmute(
+    text_ind,
+    p = n / sum(n)
+  )
+
+```
+
+
 
 ## Inference on proportions
 
@@ -80,11 +138,90 @@ Note that since the goal is to construct an interval estimate for a proportion, 
     wearers that have texted while driving each day for the past 30 days based on 
     this survey?
 
+$ME = z⋆ × SE$
+
+```{r}
+
+p <- 0.0712
+n <- 6503
+
+SE <- sqrt(p * (1-p) / n)
+
+  
+z <- -qnorm(.025)
+(round((ME = z * SE) , 4))
+
+
+```
+
+    
+
 4.  Using the `infer` package, calculate confidence intervals for two other 
     categorical variables (you'll need to decide which level to call "success", 
     and report the associated margins of error. Interpet the interval in context 
     of the data. It may be helpful to create new data sets for each of the two 
     countries first, and then use these data sets to construct the confidence intervals.
+    
+```{r}
+
+race_df <- no_helmet %>%
+  mutate(race_ind = ifelse(race == "Black or African American", "Black", "Not Black"))
+
+race_df %>%
+  count(race_ind) %>%
+  transmute(
+    race_ind,
+    p = n / sum(n)
+  )
+
+race_df %>%
+  specify(response = race_ind, success = "Black") %>%
+  generate(reps = 1000, type = "bootstrap") %>%
+  calculate(stat = "prop") %>%
+  get_ci(level = 0.95)
+
+
+p <- 0.242
+n <- 6977
+SE <- sqrt(p * (1-p) / n)
+  
+z <- -qnorm((1-.95)/2)
+(round((ME = z * SE) , 4))
+
+
+```
+    
+    
+```{r}
+
+select(no_helmet, gender) %>% distinct()
+
+
+no_helmet %>%
+  count(gender) %>%
+  transmute(
+    gender,
+    p = n / sum(n)
+  )
+
+no_helmet %>%
+  specify(response = gender, success = "female") %>%
+  generate(reps = 1000, type = "bootstrap") %>%
+  calculate(stat = "prop") %>%
+  get_ci(level = 0.95)
+
+
+p <- 0.42
+n <- 6977
+SE <- sqrt(p * (1-p) / n)
+  
+z <- -qnorm((1-.95)/2)
+(round((ME = z * SE) , 4))
+
+
+```
+    
+    
 
 ## How does the proportion affect the margin of error?
 
@@ -122,6 +259,9 @@ ggplot(data = dd, aes(x = p, y = me)) +
 5.  Describe the relationship between `p` and `me`. Include the margin of
     error vs. population proportion plot you constructed in your answer. For
     a given sample size, for which value of `p` is margin of error maximized?
+    
+- **when p = 0 the me = 0. As p increases the margin of error will increase. Until p = 50%, this is the peak me. As p increase beyond 50% the me will decrease until it reaches 0 when p=1 **
+- **for a given sample size the value of me is maximized when p = 50%**
 
 ## Success-failure condition
 
@@ -167,12 +307,23 @@ shinyApp(
 
 6.  Describe the sampling distribution of sample proportions at $n = 300$ and 
     $p = 0.1$. Be sure to note the center, spread, and shape.
+    
+-**center is just below .1**
+-**spread is about .12**
+-**shape is close to normal distribution**
+    
 
 7.  Keep $n$ constant and change $p$. How does the shape, center, and spread 
     of the sampling distribution vary as $p$ changes. You might want to adjust
     min and max for the $x$-axis for a better view of the distribution.
+-**center will shift with relation to p, center will have a similar value to p**
+-**spread will increase as we approach to p = 0.5 from either side**
+-**shape will remain normally distributed but will flatter with more spread as we approach 0.5 from either side**
+
     
 8.  Now also change $n$. How does $n$ appear to affect the distribution of $\hat{p}$?
+
+- **as n increases p_hat will be distribution in a tighter range**
 
 * * *
 
@@ -185,6 +336,48 @@ For some of the exercises below, you will conduct inference comparing two propor
     hypotheses for any tests you conduct and outline the status of the conditions
     for inference. If you find a significant difference, also quantify this 
     difference with a confidence interval. 
+    
+-**H0 sleeping 10+ hours does not increase the likelihood of strength training every day**
+-**H1 sleeping 10+ hours will increase the likelihood of strength training every day**
+
+```{r}
+
+yrbss %>% select(school_night_hours_sleep) %>% distinct()
+yrbss %>% select(strength_training_7d) %>% distinct()
+
+sst_df  <- yrbss %>%
+  mutate(
+    sleep_ind = ifelse(school_night_hours_sleep == "10+", "yes", "no"),
+    strength_ind = ifelse(strength_training_7d == "7", "yes", "no")
+    )
+
+sst_df %>%
+  count(sleep_ind) %>%
+  transmute(
+    sleep_ind,
+    p = n / sum(n)
+  )
+
+sst_df %>%
+  count(strength_ind) %>%
+  transmute(
+    strength_ind,
+    p = n / sum(n)
+  )
+
+
+sst_df %>%
+  specify(response = sleep_ind, explanatory = strength_ind, success = "yes") %>%
+  generate(reps = 1000, type = "bootstrap") %>%
+  calculate(stat = "prop") %>%
+  get_ci(level = 0.95)
+
+
+
+
+```
+
+
 
 10.  Let's say there has been no difference in likeliness to strength train every
     day of the week for those who sleep 10+ hours. What is the probablity that
