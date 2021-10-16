@@ -8,10 +8,12 @@ output:
     css: ./lab.css
     highlight: pygments
     theme: cerulean
-    toc: true
-    toc_float: true
+    toc: yes
+    toc_float: yes
   pdf_document: default
-editor_options: 
+  word_document:
+    toc: yes
+editor_options:
   chunk_output_type: console
 ---
 
@@ -81,20 +83,12 @@ no_helmet <- no_helmet %>%
 no_helmet <- no_helmet %>% drop_na(text_ind)
 
 
-# no_helmet <- no_helmet %>%
-#   mutate(text_ind = ifelse(is.na(text_while_driving_30d), "no" ,
-#     ifelse(
-#      text_while_driving_30d == "30", "yes", "no")
-#     )
-#   )
-
-
 ```
 
 
 ```{r}
 
-no_helmet %>% select(text_ind) %>% distinct()
+(no_helmet %>% select(text_ind) %>% distinct())
 
 no_helmet %>%
   count(text_ind) %>%
@@ -104,17 +98,9 @@ no_helmet %>%
   )
 
 
-no_helmet2 %>% select(text_ind) %>% distinct()
-
-no_helmet2 %>%
-  count(text_ind) %>%
-  transmute(
-    text_ind,
-    p = n / sum(n)
-  )
-
 ```
 
+-**0.0712**
 
 
 ## Inference on proportions
@@ -154,7 +140,7 @@ z <- -qnorm(.025)
 
 ```
 
-    
+-**0.0063**    
 
 4.  Using the `infer` package, calculate confidence intervals for two other 
     categorical variables (you'll need to decide which level to call "success", 
@@ -165,7 +151,8 @@ z <- -qnorm(.025)
 ```{r}
 
 race_df <- no_helmet %>%
-  mutate(race_ind = ifelse(race == "Black or African American", "Black", "Not Black"))
+  mutate(race_ind = ifelse(race == "Black or African American", "Black", "Not Black")) %>%
+  drop_na(race_ind)
 
 race_df %>%
   count(race_ind) %>%
@@ -181,8 +168,8 @@ race_df %>%
   get_ci(level = 0.95)
 
 
-p <- 0.242
-n <- 6977
+p <- 0.297
+n <- 5178
 SE <- sqrt(p * (1-p) / n)
   
 z <- -qnorm((1-.95)/2)
@@ -196,15 +183,17 @@ z <- -qnorm((1-.95)/2)
 
 select(no_helmet, gender) %>% distinct()
 
+gender_df <- no_helmet %>%
+  drop_na(gender)
 
-no_helmet %>%
+gender_df %>%
   count(gender) %>%
   transmute(
     gender,
     p = n / sum(n)
   )
 
-no_helmet %>%
+gender_df %>%
   specify(response = gender, success = "female") %>%
   generate(reps = 1000, type = "bootstrap") %>%
   calculate(stat = "prop") %>%
@@ -212,11 +201,13 @@ no_helmet %>%
 
 
 p <- 0.42
-n <- 6977
+n <- 6500
 SE <- sqrt(p * (1-p) / n)
   
 z <- -qnorm((1-.95)/2)
 (round((ME = z * SE) , 4))
+
+
 
 
 ```
@@ -308,17 +299,17 @@ shinyApp(
 6.  Describe the sampling distribution of sample proportions at $n = 300$ and 
     $p = 0.1$. Be sure to note the center, spread, and shape.
     
--**center is just below .1**
--**spread is about .12**
--**shape is close to normal distribution**
+- **center is just below .1**
+- **spread is about .12**
+- **shape is close to normal distribution**
     
 
 7.  Keep $n$ constant and change $p$. How does the shape, center, and spread 
     of the sampling distribution vary as $p$ changes. You might want to adjust
     min and max for the $x$-axis for a better view of the distribution.
--**center will shift with relation to p, center will have a similar value to p**
--**spread will increase as we approach to p = 0.5 from either side**
--**shape will remain normally distributed but will flatter with more spread as we approach 0.5 from either side**
+- **center will shift with relation to p, center will have a similar value to p**
+- **spread will increase as we approach to p = 0.5 from either side**
+- **shape will remain normally distributed but will flatter with more spread as we approach 0.5 from either side**
 
     
 8.  Now also change $n$. How does $n$ appear to affect the distribution of $\hat{p}$?
@@ -337,43 +328,39 @@ For some of the exercises below, you will conduct inference comparing two propor
     for inference. If you find a significant difference, also quantify this 
     difference with a confidence interval. 
     
--**H0 sleeping 10+ hours does not increase the likelihood of strength training every day**
--**H1 sleeping 10+ hours will increase the likelihood of strength training every day**
+- **H0 sleeping 10+ and strength training every day are independent. Sleeping 10+ hours does not increase the likelihood of strength training every day**
+- **H1 sleeping 10+ hours will increase the likelihood of strength training every day**
+
+- **Conditions**
+- Independence: Each case that contributes a count to the table must be independent of all the other cases in the table.
+-- each record is for an individual so they cases should be independent. 
+- Sample size: Each particular scenario (i.e. cell) must have at least 5 expected cases.
+-- each cell has more the 5 cases
+
+- **Conclusion**
+-- the confidence interval includes zero so there is no difference between the groups 
 
 ```{r}
 
 yrbss %>% select(school_night_hours_sleep) %>% distinct()
 yrbss %>% select(strength_training_7d) %>% distinct()
 
+
 sst_df  <- yrbss %>%
   mutate(
     sleep_ind = ifelse(school_night_hours_sleep == "10+", "yes", "no"),
     strength_ind = ifelse(strength_training_7d == "7", "yes", "no")
-    )
-
-sst_df %>%
-  count(sleep_ind) %>%
-  transmute(
-    sleep_ind,
-    p = n / sum(n)
-  )
-
-sst_df %>%
-  count(strength_ind) %>%
-  transmute(
-    strength_ind,
-    p = n / sum(n)
-  )
+    ) %>%
+  drop_na(sleep_ind,strength_ind)
 
 
-sst_df %>%
-  specify(response = sleep_ind, explanatory = strength_ind, success = "yes") %>%
-  generate(reps = 1000, type = "bootstrap") %>%
-  calculate(stat = "prop") %>%
+sst_df  %>%
+  specify(sleep_ind ~ strength_ind, success = "yes") %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "diff in props", order=c("yes","no")) %>%
   get_ci(level = 0.95)
 
-
-?calculate
 
 ```
 
@@ -383,6 +370,15 @@ sst_df %>%
     day of the week for those who sleep 10+ hours. What is the probablity that
     you could detect a change (at a significance level of 0.05) simply by chance?
     *Hint:* Review the definition of the Type 1 error.
+    
+- **Type 1 error is rejecting a true null hypothesis so the probablity is 0.05**
+    
+```{r}
+
+pchisq(q = 24, df = 1, lower.tail = FALSE)
+
+```
+    
 
 11.  Suppose you're hired by the local government to estimate the proportion of 
     residents that attend a religious service on a weekly basis. According to 
@@ -392,5 +388,17 @@ sst_df %>%
     guidelines?\
     *Hint:* Refer to your plot of the relationship between $p$ and margin of 
     error. This question does not require using a dataset.
+    
+    
+```{r}
+
+p = 0.5
+z <- 1.96
+ME <- 0.01
+
+(1/((ME^2 / z^2 / p^2)))
+
+```
+- **9604**   
 
 * * *
