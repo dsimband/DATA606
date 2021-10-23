@@ -41,6 +41,10 @@ rt_df <- read_csv( file = "./rt.csv")
 Is race a determination factor in the likelihood of contracting COVID, being hospitalized or dying from COVID related medical complications. 
 
 
+
+
+
+
 ### Cases 
 
 **What are the cases, and how many are there?**
@@ -72,6 +76,7 @@ The data was collected as part of the Covid Tracking Project https://covidtracki
 
 Atlantic Monthly Group LLC (“The Atlantic”) 2021. 2021-03 [*The COVID Tracking Project at The Atlantic*](https://assets.ctfassets.net/o2ll9t4ee8tq/5P2QPF674OD1TGHUrVABx3/85a456045efa0d70ad42d9bf14c3beb0/CDC_Report_CTP.pdf) 
 
+https://covidtracking.com/data
 
 ### Dependent Variable
 
