@@ -2,14 +2,15 @@
 title: "Chapter 7 - Inference for Numerical Data"
 author: "David Simbandumwe"
 output:
-  html_document:
-    df_print: paged
+  word_document: default
   pdf_document:
     extra_dependencies:
     - geometry
     - multicol
     - multirow
     - xcolor
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -204,6 +205,32 @@ axis(2, at = c(15,25,35))
 ```
 
 
+```{r}
+
+x_a <- 22.92
+s_a <- 5.29
+n_a <- 26
+df_a <- n_a - 1
+
+x_m <- 27.88 
+s_m <- 5.01
+n_m <- 26
+df_m <- n_m - 1
+   
+
+PE <- x_m - x_a 
+SE <- sqrt(s_a^2/n_a + s_m^2/n_m)
+
+df <- min(df_a, df_m)
+z <- qt(p = 0.98, df = 22)
+  
+
+(CI <- c(PE-z*SE, PE+z*SE))
+
+
+```
+- **There difference in the average gas milage for automatic cars minus the average milage for manual cars will be between 1.184 and 8.079 with 98% confidence**
+
 
 
 
@@ -214,8 +241,26 @@ axis(2, at = c(15,25,35))
 
 **Email outreach efforts.** (7.34, p. 284) A medical research group is recruiting people to complete short surveys about their medical history. For example, one survey asks for information on a person's family history in regards to cancer. Another survey asks about what topics were discussed during the person's last visit to a hospital. So far, as people sign up, they complete an average of just 4 surveys, and the standard deviation of the number of surveys is about 2.2. The research group wants to try a new interface that they think will encourage new enrollees to complete more surveys, where they will randomize each enrollee to either get the new interface or the current interface. How many new enrollees do they need for each interface to detect an effect size of 0.5 surveys per enrollee, if the desired power level is 80%?
 
+```{r}
 
 
+target <- 0.5
+x <- 4
+s <- 2.2
+power <- 0.8
+
+z_s <- qnorm(power)
+z <- 1.96
+
+SE <- target / (z + z_s)
+
+(n <- (2 * s^2) / (SE^2))
+
+
+
+```
+
+- **at a confidence level or 95% they would require 304 enrollees to get the desired power level of 80%**
 
 
 
@@ -257,8 +302,40 @@ boxPlot(gss_sub$hrs1, fact = gss_sub$degree,
 ```
 
 (a) Write hypotheses for evaluating whether the average number of hours worked varies across the five groups.
+- **H0 - there is no difference in the average hours worked for individuals with Less than HS, HS, Jr Coll, Bachelor's, Graduate**
+- **H1 - there is a differnece in the average hours worked for individuals with Less than HS, HS, Jr Coll, Bachelor's, Graduate. at least one mean is different**
+
 (b) Check conditions and describe any assumptions you must make to proceed with the test.
+- **independence (within / across) - each observation within the groups represents a single individual so the observations are independent. each group is mutually exclusive so the observations across groups are independent**
+- **normal distribution - the data from each group approaches a normal distribution**
+- **variability between groups is equal - based on the box plots its appears that the individual groups have similar variability **
+
+
 (c) Below is part of the output associated with this test. Fill in the empty cells.
+```{r}
+
+one.way <- aov(hrs1 ~ degree, data = gss_sub)
+summary(one.way)
+
+
+
+```
+- **degree**
+- df = 4
+- sum sq = 2006
+- F value = 2.189
+
+- **residutal**
+- df = 1167
+- mean sq = 229.1
+
+
+- **total**
+- df = 1171
+- sum sq = 269,388
+
+
+
 
 \begin{center}
 \renewcommand{\arraystretch}{1.25}
@@ -270,7 +347,8 @@ boxPlot(gss_sub$hrs1, fact = gss_sub$degree,
                                     & F-value      
                                             & Pr($>$F) \\ 
   \hline
-degree      & \fbox{\textcolor{white}{{\footnotesize XXXXX}}}       
+degree      & \fbox{\textcolor{white}{{\footnotesize XXXXX}}}  
+                      &4
                     & \fbox{\textcolor{white}{{\footnotesize XXXXX}}}       
                             & 501.54    
                                     & \fbox{\textcolor{white}{{\footnotesize XXXXX}}}   
@@ -286,9 +364,9 @@ Total       & \fbox{\textcolor{white}{{\footnotesize XXXXX}}}
 \end{tabular}
 \end{center}
 
+
 (d) What is the conclusion of the test?
-
-
+- **with a p-value of 0.0682 the is not enough evidence to reject the null hypothesis at a 0.05 level of confidence**
 
 
 
