@@ -3,14 +3,14 @@ title: "Chapter 7 - Inference for Numerical Data"
 author: "David Simbandumwe"
 output:
   word_document: default
+  html_document:
+    df_print: paged
   pdf_document:
     extra_dependencies:
     - geometry
     - multicol
     - multirow
     - xcolor
-  html_document:
-    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -25,17 +25,22 @@ library(tidyverse)
 
 ```{r}
 
-x <- 70.9636
-z <- round(-qnorm((1-.9)/2),2)
-s <- 18.1818
+x1 <- 77
+x2 <- 65
 n <- 25
+z <- 1.64
+t <- 1.7109
 
-SE <- s/sqrt(n)
-CI <- c(x-z*SE, x+z*SE)
+(mean_s <- (x1+x2)/2)
+(ME <- (x1-x2)/2)
+
+(s <- (ME * sqrt(n)) / t)
 
 
 ```
-
+- **sample mean is 71**
+- **margine error 6**
+- **standard deviation 17.53**
 
 
 
@@ -50,9 +55,6 @@ CI <- c(x-z*SE, x+z*SE)
 $ME = z *  \frac{s}{\sqrt{n}}$
 $n  =  \frac{z * s}{ME}$
 
-
-```{r}
-```
 
 
 ```{r}

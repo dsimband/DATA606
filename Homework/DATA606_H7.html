@@ -173,13 +173,23 @@ pre code {
 
 
 <p><strong>Working backwards, Part II.</strong> (5.24, p. 203) A 90% confidence interval for a population mean is (65, 77). The population distribution is approximately normal and the population standard deviation is unknown. This confidence interval is based on a simple random sample of 25 observations. Calculate the sample mean, the margin of error, and the sample standard deviation.</p>
-<pre class="r"><code>x &lt;- 70.9636
-z &lt;- round(-qnorm((1-.9)/2),2)
-s &lt;- 18.1818
+<pre class="r"><code>x1 &lt;- 77
+x2 &lt;- 65
 n &lt;- 25
+z &lt;- 1.64
+t &lt;- 1.7109
 
-SE &lt;- s/sqrt(n)
-CI &lt;- c(x-z*SE, x+z*SE)</code></pre>
+(mean_s &lt;- (x1+x2)/2)</code></pre>
+<pre><code>## [1] 71</code></pre>
+<pre class="r"><code>(ME &lt;- (x1-x2)/2)</code></pre>
+<pre><code>## [1] 6</code></pre>
+<pre class="r"><code>(s &lt;- (ME * sqrt(n)) / t)</code></pre>
+<pre><code>## [1] 17.53463</code></pre>
+<ul>
+<li><strong>sample mean is 71</strong></li>
+<li><strong>margine error 6</strong></li>
+<li><strong>standard deviation 17.53</strong></li>
+</ul>
 <hr />
 <p><strong>SAT scores.</strong> (7.14, p. 261) SAT scores of students at an Ivy League college are distributed with a standard deviation of 250 points. Two statistics students, Raina and Luke, want to estimate the average SAT score of students at this college as part of a class project. They want their margin of error to be no more than 25 points.</p>
 <ol style="list-style-type: lower-alpha">
