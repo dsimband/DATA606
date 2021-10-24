@@ -2,6 +2,7 @@
 title: 'DATA606_w7: Inference for numerical data'
 author: "David Simbandumwe"
 output:
+  pdf_document: default
   html_document:
     includes:
       in_header: header.html
@@ -10,7 +11,6 @@ output:
     theme: cerulean
     toc: true
     toc_float: true
-  pdf_document: default
 editor_options: 
   chunk_output_type: console
 ---
@@ -55,7 +55,7 @@ There are observations on 13 different variables, some categorical and some nume
 
 1.  What are the cases in this data set? How many cases are there in our sample?
 - **individual student **
-- **13,583**
+- **13,583 cases and 13 variables**
 
 Remember that you can answer this question by viewing the data in the data viewer or by using the following command:
 
@@ -320,7 +320,7 @@ yrbss %>% select(hours_tv_per_school_day) %>% distinct() %>% summarize(n())
 
 ```
  
- - **8 different options**
+ - **7 different options and NA for invalid obserations**
 
 
 
