@@ -49,11 +49,11 @@ The data we're working with is in the openintro package and it's called `hfi`, s
 
 1.  What are the dimensions of the dataset?
 ```{r}
-glimpse(hfi)
+dim(hfi)
 ```
 
-- **rows - observactions 1,458**
-- **colums - variables 123**
+- **rows - observations 1,458**
+- **columns - variables 123**
 
 
 2.  What type of plot would you use to display the relationship between the personal
@@ -99,7 +99,7 @@ Think back to the way that we described the distribution of a single variable. R
     strength of the relationship as well as any unusual observations.
 - **form: linear**
 - **direction: positive**
-- **stregth: moderate the points seem to be somewhat scattered**
+- **strength: moderate the points seem to be somewhat scattered**
 
 Just as you've used the mean and standard deviation to summarize a single variable, you can summarize the relationship between these two variables by finding the line that best follows their association. Use the following interactive function to select the line that you think does the best job of going through the cloud of points.
 
@@ -251,7 +251,7 @@ Note that the syntax for making a normal probability plot is a bit different tha
 
 8.  Based on the histogram and the normal probability plot, does the nearly 
     normal residuals condition appear to be met?
-- **yes the histogram is close to normal distribuion and the normal probablity plot is almost a straight line**
+- **yes the histogram is close to normal distribution and the normal probability plot is almost a straight line**
 
 </br>
 
@@ -272,10 +272,10 @@ Note that the syntax for making a normal probability plot is a bit different tha
 
 ```{r}
 
-ggplot(hfi, aes(x=ef_legal_protection, y=pf_score)) + geom_point(alpha = 1/5) + ggtitle("ef_legal_protection")
-ggplot(hfi, aes(x=pf_association_sport, y=pf_score)) + geom_point(alpha = 1/5) + ggtitle("pf_association_sport")
-ggplot(hfi, aes(x=pf_rol_criminal, y=pf_score)) + geom_point(alpha = 1/5) + ggtitle("pf_rol_criminal")
-ggplot(hfi, aes(x=pf_ss_homicide, y=pf_score)) + geom_point(alpha = 1/5) + ggtitle("pf_ss_homicide")
+ggplot(hfi, aes(x=ef_legal_protection, y=pf_score)) + geom_point(alpha = 1/5) + stat_smooth(method = "lm", se = FALSE) + ggtitle("ef_legal_protection")
+ggplot(hfi, aes(x=pf_association_sport, y=pf_score)) + geom_point(alpha = 1/5) + stat_smooth(method = "lm", se = FALSE) + ggtitle("pf_association_sport")
+ggplot(hfi, aes(x=pf_rol_criminal, y=pf_score)) + geom_point(alpha = 1/5) + stat_smooth(method = "lm", se = FALSE) + ggtitle("pf_rol_criminal")
+ggplot(hfi, aes(x=pf_ss_homicide, y=pf_score)) + geom_point(alpha = 1/5) + stat_smooth(method = "lm", se = FALSE)+  ggtitle("pf_ss_homicide")
 ```
 
 
