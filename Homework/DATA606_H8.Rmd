@@ -114,11 +114,15 @@ plot(bdims$hgt ~ bdims$sho_gi,
 **Body measurements, Part III.** (8.24, p. 326) Exercise above introduces data on shoulder girth and height of a group of individuals. The mean shoulder girth is 107.20 cm with a standard deviation of 10.37 cm. The mean height is 171.14 cm with a standard deviation of 9.41 cm. The correlation between height and shoulder girth is 0.67.
 
 (a) Write the equation of the regression line for predicting height.
-
+\[
 y = b_{0} + b_{1} \times x_{0}
+\]
 
-- **slope** b_{1} = \frac{S_{y}}{S_{x}} \times  R
-- **intercept** y - y_{0} = b_{1} \times (x - x_{0})
+
+- **slope** \[b_{1} = \frac{S_{y}}{S_{x}} \times  R\]
+- **intercept**\[ y - y_{0} = b_{1} \times (x - x_{0})\]
+
+
 
 ```{r}
 Sy <- 9.41
@@ -136,7 +140,7 @@ x <- 0
 (y_int <- b1 * (x - x_mean) + y_mean)
 ```
 
-y = 105.965 + 0.608 \times x_{0}
+\[y = 105.965 + 0.608 \times x_{0}\]
 
 
 (b) Interpret the slope and the intercept in this context.
@@ -156,7 +160,7 @@ R <- 0.67
 - **The regression line explains 44.9% of the variability in height**   
 
 (d) A randomly selected student from your class has a shoulder girth of 100 cm. Predict the height of this student using the model.
-y = 105.965 + 0.608 \times x_{0}
+\[y = 105.965 + 0.608 \times x_{0}\]
 
 
 ```{r}
@@ -170,7 +174,7 @@ x <- 100
 
 (e) The student from part (d) is 160 cm tall. Calculate the residual, and explain what this residual means.
 
-e_{x} = y_{x} - \hat{y_{x}}
+\[ e_{x} = y_{x} - \hat{y_{x}} \]
 
 ```{r}
 (e_x <- 160 - 166.765)
@@ -243,13 +247,13 @@ box()
 
 (a) Write out the linear model.
 
-y = b_{0} + b_{1} \times x_{0}
+\[ y = b_{0} + b_{1} \times x_{0} \]
 
 - **intercept: -0.357**
 - **slope: 4.034**
 
 
-y = -0.357 + 4.034 \times x_{0}
+\[ y = -0.357 + 4.034 \times x_{0} \]
 
 
 (b) Interpret the intercept.
@@ -268,7 +272,7 @@ y = -0.357 + 4.034 \times x_{0}
 
 
 (e) Calculate the correlation coefficient.
-r = \sqrt{r^{2}}
+\[r = \sqrt{r^{2}}\]
 
 
 ```{r}
@@ -322,9 +326,9 @@ box()
 \end{center}
 
 (a) Given that the average standardized beauty score is -0.0883 and average teaching evaluation score is 3.9983, calculate the slope. Alternatively, the slope may be computed using just the information provided in the model summary table.
-y - \bar{y} = b_{1} \times (x - \bar{x})
+\[y - \bar{y} = b_{1} \times (x - \bar{x})\]
 
-b_{1} = \frac{y - \bar{y}}{x - \bar{x}}
+\[b_{1} = \frac{y - \bar{y}}{x - \bar{x}}\]
 
 ```{r}
 
