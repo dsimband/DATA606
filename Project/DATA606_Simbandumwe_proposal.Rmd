@@ -1,170 +1,480 @@
 ---
-title: DATA 606 Data Project Proposal
-author: 'David Simbandumwe'
+title: "DATA 606 Data Project Proposal"
+author: "David Simbandumwe"
 output:
+  pdf_document: default
   html_document:
-    df_print: paged
-  pdf_document:
-    extra_dependencies:
-    - geometry
-    - multicol
-    - multirow
+    code_folding: show
+    theme:
+      bg: '#202123'
+      fg: '#B8BCC2'
+      primary: '#EA80FC'
+      secondary: '#00DAC6'
+      base_font:
+        google: Prompt
+      heading_font:
+        google: Proza Libre
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library("VennDiagram")
 library(tidyverse)
+library(plyr)
+library(dplyr)
 library(readtext)
 library(lubridate)
+library(scales)
+library("gridExtra")  
 
 ```
 
 
 
 
-### Data Preparation
-
-```{r}
-# load data
-
-crdt_df <- read_csv( file = "./CRDT_Data_CRDT.csv")
-rt_df <- read_csv( file = "./rt.csv")
-```
 
 
-### Research question 
+# Research Question 
 
-**You should phrase your research question in a way that matches up with the scope of inference your dataset allows for.**
+**You should phrase your research question in a way that matches up with the scope of inference your data set allows for.**
 
-Is race a determination factor in the likelihood of contracting COVID, being hospitalized or dying from COVID related medical complications. 
-
-
+I choose to study the results of the Financial well-being survey. The survey is part of the ongoing research from the Consumer Financial Protection Bureau. It was focused on understanding the factors that support consumer financial well-being in an effort to assist practitioners and policymakers empower more families to lead better financial lives to serve their own goals.
 
 
+<br>
+**The research suggests that the following factors will influence adults well being:**
+
+- Income and employment
+- Savings and safety nets
+- Past financial experiences
+- Financial behaviors, skills, and attitudes
 
 
-### Cases 
+<br>
+**The CFPB Financial Well-Being Scale contains the following 10 questions:**
+
+How well does this statement describe you or your situation?
+
+1. I could handle a major unexpected expense
+2. I am securing my financial future
+3. Because of my money situation, I feel like I will never have the things I want in life*
+4. I can enjoy life because of the way I’m managing my money
+5. I am just getting by financially*
+6. I am concerned that the money I have or will save won’t last*
+
+
+How often does this statement apply to you?
+
+7. Giving a gift for a wedding, birthday or other occasion would put a strain on my finances for the month*
+8. I have money left over at the end of the month
+9. I am behind with my finances*
+10. My finances control my life*
+
+
+<br>
+**I planned to approach this project using the following three lines of inquiry:**
+
+1. Explore the relevance of the findings to the general population. Review the key financial wellness measure identified in the study and analyze their relevance to the general population. Using the t distribution I will look at the sample statistics for the FWBScore, LMScore and KJScore then calculate the corresponding confidence intervals for the population.
+
+    - FWBscore - Financial well-being scale score4 - IRT score
+    - FSscore - Financial skill scale score IRT score
+    - LMscore - Lusardi and Mitchell financial knowledge scale score - Summative scale score
+    - KHscore - Knoll and Houts financial knowledge scale score - IRT score
+<br><br>
+
+2. Impact of race, and gender on financial well being. Race and Gender are all categorical variables in the data set. 
+
+    - PPETHM - Race / Ethnicity - is there a statistical difference between the financial wellness of white non hispanics and the other ethnic groups surveyed.
+    - PPGENDER - Gender - is there a statistical difference between financial wellness scores for male or female 
+
+**Race**
+
+    - H0 - being "White, Non Hispanic" does not impact the financial well being score (FWBscore) for an individual in the population.
+    - H1 - being "White, Non Hispanic" does impact the financial well being score (FWBscore) for an individual in the population.
+<br>
+
+**Gender**
+
+    - H0 - being a "Male" does not impact the financial well being score (FWBscore) for an individual in the population.
+    - H1 - being a "Male" does impact the financial well being score (FWBscore) for an individual in the population.
+<br>
+
+3. Impact of intersectionality on financial well being. Does race and gender have an impact on financial well being?
+
+
+**Intersectionality**
+
+    - H0 - being a "White, Non Hispanic" "Male" does not impact the financial well being score (FWBscore) for an individual in the population.
+    - H1 - being a "White, Non Hispanic" "Male" does impact the financial well being score (FWBscore) for an individual in the population.
+
+
+
+
+
+# Cases 
 
 **What are the cases, and how many are there?**
 
-There are 5320 unique cases identified by state and the specific date
+The cases are the individual survey responses from 6394 survey participants.
 
-### Data collection 
+
+
+# Data Collection 
 
 **Describe the method of data collection.**
 
-The data was collected as part of the The COVID Racial Data Tracker project. The COVID Racial Data Tracker is a collaboration between the COVID Tracking Project and the Boston University Center for Antiracist Research. Together, we’re gathering the most complete and up-to-date race and ethnicity data on COVID-19 in the United States.
+The data was collected as part of the Consumer Financial Protection Bureau’s (CFPB) National Financial Well-Being Survey Public Use File (PUF). The PUF is a dataset containing 
 
-We’ve asked every state to report complete race and ethnicity data. Our Racial Data Dashboard has the latest.
+(1) data collected in the National Financial Well-Being Survey, 
+(2) data about members of the GfK KnowledgePanel collected prior to the survey, and 
+(3) data on poverty levels in respondents’ counties of residence.
+
+The National Financial Well-Being Survey was conducted in English and Spanish via web mode between October 27, 2016 and December 5, 2016. Overall, 6,394 surveys were completed: 5,395 from the general population sample and 999 from an oversample of adults aged 62 and older. The survey was designed to represent the adult population of the 50 U.S. states and the District of Columbia. The survey was fielded on the GfK KnowledgePanel®. The KnowledgePanel sample is recruited using address-based sampling and dual-frame landline and cell phone random digit dialing methods.
+
+The PUF was published in 2017.
 
 
-### Type of study 
+# Data Preparation
+
+```{r, include = FALSE }
+# clear data
+rm(list=ls())
+
+# read well being survey data
+wellbeing_df <- read.csv("https://files.consumerfinance.gov/f/documents/NFWBS_PUF_2016_data.csv")
+
+
+```
+
+
+
+## Select Key Variables
+```{r}
+# summary of data
+dim(wellbeing_df)
+
+df <- wellbeing_df %>%
+    select(sample, fpl, 
+            FWBscore,FSscore,LMscore,KHscore,
+           LIVINGARRANGEMENT,EARNERS, SAVINGSRANGES,
+           HOUSING,VALUERANGES,MORTGAGE,
+           agecat,generation,PPEDUC,PPETHM,PPGENDER,PPINCIMP,
+           PPHHSIZE,PPMARIT,PPMSACAT,PPREG4,PPREG9
+          )
+
+```
+
+
+## Tiddy Factor Data
+```{r echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+
+df$sample = revalue(factor(df$sample), c(
+  `1` = "General population",
+  `2` = "Age 62+ oversample",
+  `3` = "Race/ethnicity and poverty oversample"
+))
+df$fpl = revalue(factor(df$fpl), c(
+  `1` = "<100% FPL",
+  `2` = "100%-199% FPL",
+  `3` = "200%+ FPL"
+))
+df$LIVINGARRANGEMENT = revalue(factor(df$LIVINGARRANGEMENT), c(
+  `-1` = "Refused",
+  `1` = "I am the only adult in the household",
+  `2` = "I live with my spouse/partner/significant other",
+  `3` = "I live in my parents' home",
+  `4` = "I live with other family, friends, or roommates",
+  `5` = "Some other arrangement"
+))
+df$EARNERS = revalue(factor(df$EARNERS), c(
+  `-1` = "Refused",
+  `1` = "One",
+  `2` = "Two",
+  `3` = "More than two"
+))
+df$SAVINGSRANGES = revalue(factor(df$SAVINGSRANGES), c(
+  `-1` = "Refused",
+  `1` = "0",
+  `2` = "$1-99",
+  `3` = "$100-999",
+  `4` = "$1,000-4,999",
+  `5` = "$5,000-19,999",
+  `6` = "$20,000-74,999",
+  `7` = "$75,000 or more",
+  `98` = "I don't know",
+  `99` = "Prefer not to say"
+))
+df$HOUSING = revalue(factor(df$HOUSING), c(
+  `-1` = "Refused",
+  `1` = "I own my home",
+  `2` = "I rent",
+  `3` = "I do not currently own or rent"
+))
+df$VALUERANGES = revalue(factor(df$VALUERANGES), c(
+  `-2` = "Question not asked because respondent not in item base",
+  `-1` = "Refused",
+  `1` = "Less than $150,000",
+  `2` = "$150,000-249,999",
+  `3` = "$250,000-399,999",
+  `4` = "$400,000 or more",
+  `98` = "I don't know",
+  `99` = "Prefer not to say"
+))
+df$MORTGAGE = revalue(factor(df$MORTGAGE), c(
+  `-2` = "Question not asked because respondent not in item base",
+  `-1` = "Refused",
+  `1` = "Less than $50,000",
+  `2` = "$50,000-199,999",
+  `3` = "$200,000 or more",
+  `98` = "I don't know",
+  `99` = "Prefer not to say"
+))
+df$SAVINGSRANGES = revalue(factor(df$SAVINGSRANGES), c(
+  `-1` = "Refused",
+  `1` = "0",
+  `2` = "$1-99",
+  `3` = "$100-999",
+  `4` = "$1,000-4,999",
+  `5` = "$5,000-19,999",
+  `6` = "$20,000-74,999",
+  `7` = "$75,000 or more",
+  `98` = "I don't know",
+  `99` = "Prefer not to say"
+))
+
+df$agecat = revalue(factor(df$agecat), c(
+  `1` = "18-24",
+  `2` = "25-34",
+  `3` = "35-44",
+  `4` = "45-54",
+  `5` = "55-61",
+  `6` = "62-69",
+  `7` = "70-74",
+  `8` = "75+"
+))
+df$generation = revalue(factor(df$generation), c(
+  `1` = "Pre-Boomer",
+  `2` = "Boomer",
+  `3` = "Gen X",
+  `4` = "Millennial"
+))
+df$PPEDUC = revalue(factor(df$PPEDUC), c(
+  `1` = "Less than high school",
+  `2` = "High school degree/GED",
+  `3` = "Some college/Associate",
+  `4` = "Bachelor's degree",
+  `5` = "Graduate/professional degree"
+))
+df$PPETHM = revalue(factor(df$PPETHM), c(
+  `1` = "White, Non-Hispanic",
+  `2` = "Black, Non-Hispanic",
+  `3` = "Other, Non-Hispanic",
+  `4` = "Hispanic"
+))
+df$PPGENDER = revalue(factor(df$PPGENDER), c(
+  `1` = "Male",
+  `2` = "Female"
+))
+df$PPHHSIZE = revalue(factor(df$PPHHSIZE), c(
+  `1` = "1",
+  `2` = "2",
+  `3` = "3",
+  `4` = "4",
+  `5` = "5+"
+))
+df$PPINCIMP = revalue(factor(df$PPINCIMP), c(
+  `1` = "Less than $20,000",
+  `2` = "$20,000 to $29,999",
+  `3` = "$30,000 to $39,999",
+  `4` = "$40,000 to $49,999",
+  `5` = "$50,000 to $59,999",
+  `6` = "$60,000 to $74,999",
+  `7` = "$75,000 to $99,999",
+  `8` = "$100,000 to $149,999",
+  `9` = "$150,000 or more"
+))
+df$PPMARIT = revalue(factor(df$PPMARIT), c(
+  `1` = "Married",
+  `2` = "Widowed",
+  `3` = "Divorced/Separated",
+  `4` = "Never married",
+  `5` = "Living with partner"
+))
+df$PPMSACAT = revalue(factor(df$PPMSACAT), c(
+  `0` = "Non-Metro",
+  `1` = "Metro"
+))
+df$PPREG4 = revalue(factor(df$PPREG4), c(
+  `1` = "Northeast",
+  `2` = "Midwest",
+  `3` = "South",
+  `4` = "West"
+))
+df$PPREG9 = revalue(factor(df$PPREG9), c(
+  `1` = "New England",
+  `2` = "Mid-Atlantic",
+  `3` = "East-North Central",
+  `4` = "West-North Central",
+  `5` = "South Atlantic",
+  `6` = "East-South Central",
+  `7` = "West-South Central",
+  `8` = "Mountain",
+  `9` = "Pacific"
+))
+
+```
+
+
+
+```{r}
+glimpse(df)
+```
+
+
+
+# Type of Study 
 
 **What type of study is this (observational/experiment)?**
 
-This is an observational study based on actual data reported by the 51 states / territorie.
+This is an observational study based on a financial wellness survey conducted on 6394 participants
 
 
-### Data Source 
+# Data Source 
 
 **If you collected the data, state self-collected. If not, provide a citation/link.**
 
-The data was collected as part of the Covid Tracking Project https://covidtracking.com/data. For this project the data was downloaded as csv file for processing. 
+The data was collected as part of the Consumer Financial Protection Bureau's efforts to develop a rigorousness set of research activities designed to define and measure “success” for financial literacy initiatives.
+
+The PUF survey results can be accessed as a csv file [*Financial well-being survey data*](https://www.consumerfinance.gov/documents/5614/NFWBS_PUF_2016_data.csv)
 
 
-Atlantic Monthly Group LLC (“The Atlantic”) 2021. 2021-03 [*The COVID Tracking Project at The Atlantic*](https://assets.ctfassets.net/o2ll9t4ee8tq/5P2QPF674OD1TGHUrVABx3/85a456045efa0d70ad42d9bf14c3beb0/CDC_Report_CTP.pdf) 
 
-https://covidtracking.com/data
-
-### Dependent Variable
-
+## Dependent Variable
 **What is the response variable? Is it quantitative or qualitative?**
 
-The response variable is the number of cases, deaths and hospitalizations
+The dependent variable for the analysis the Financial well-being scale score (FWBscore). This is a qualitative continuous variable. 
 
-
-### Independent Variable
-
+## Independent Variable
 **You should have two independent variables, one quantitative and one qualitative.**
-The independent variable is the race of the observations and it is qualitative / categorical
+
+The independent variables for this analysis are Race (PPETHM) and Gender (PPGENDER) both are qualitative.
 
 
-### Relevant summary statistics 
 
+# Relevant Summary Statistics 
 **Provide summary statistics for each the variables. Also include appropriate visualizations related to your research question (e.g. scatter plot, boxplots, etc). This step requires the use of R, hence a code chunk is provided below. Insert more code chunks as needed.**
 
+
+## Financial Well-Being Scale Score (FWBscore)
+
+The financial well-being score appears normally distributed with mean of 56.03 and a median 56.00.
+
 ```{r}
 
-summary(crdt_df)
+df %>% 
+ggplot(aes(x = FWBscore)) +
+  geom_histogram(bins = 50) +
+  labs(
+   title = paste(
+     "Financial well-being scale score")
+  )
+summary(df$FWBscore)
 
-death_df <- crdt_df %>% 
-  filter(Date > 20200101) %>%
-  replace_na(list(Deaths_Total=0, Deaths_White=0, Deaths_Black=0, Deaths_Latinx=0, Deaths_Multiracial=0  )) %>%
-  group_by(Date) %>% 
-  mutate(
-    date = ymd(Date),
-    death_total = sum(Deaths_Total, na_rm=FALSE),
-    death_white_total = sum(Deaths_White, na_rm=FALSE),
-    death_black_total = sum(Deaths_Black, na_rm=FALSE),
-    death_latinx_total = sum(Deaths_Latinx, na_rm=FALSE),
-    death_multi_total = sum(Deaths_Multiracial, na_rm=FALSE)
-  ) %>%
-  select (date, death_total, death_white_total, death_black_total,death_latinx_total,death_multi_total) %>%
-  distinct() 
-
-summary(death_df)
+```
 
 
-ggplot(data = death_df) + 
-  geom_line(mapping = aes(x=date, y=death_total, color="death_total")) +
-  geom_line(mapping = aes(x=date, y=death_white_total, color="death white")) + 
-  geom_line(mapping = aes(x=date, y=death_black_total, color="death black")) +
-  geom_line(mapping = aes(x=date, y=death_latinx_total, color="death latinx")) +
-  geom_line(mapping = aes(x=date, y=death_multi_total, color="death multi"))
-  
+The financial skills score appears normally distributes however the LM and KH Financial Knowledge Score both seem right skewed but that could be factor or limited volumes. 
 
-  
+```{r}
+
+summary(df$FSscore)
+ggp1 <- df %>% 
+ggplot(aes(x = FSscore)) +
+  geom_histogram(bins = 50) +
+  labs(
+   title = paste(
+     "Financial skill scale score")
+  )
+
+
+summary(df$LMscore)    
+ggp2 <- df %>% 
+ggplot(aes(x =  LMscore)) +
+  geom_histogram(bins = 5) +
+  labs(
+   title = paste(
+     "Lusardi and Mitchell FS Knowledge")
+  )
+
+
+summary(df$KHscore)    
+ggp3 <- df %>% 
+ggplot(aes(x =  KHscore)) +
+  geom_histogram(bins = 8) +
+  labs(
+   title = paste(
+     "Knoll and Houts FS Knowledge")
+  )
+
+grid.arrange(ggp1, ggp2, ggp3, ncol = 3)  
+
+```
+
+
+
+# Independent Variable - Race (PPETHM)
+
+The means financial wellness scores for all non white ethnic groups are lower with Blacks and Hispanics showing a smaller standard deviation. The histogram's across ethnic group are normally distributed an show a substantial overlap.
+
+```{r}
+
+df %>%
+    group_by(PPETHM) %>%
+    dplyr::summarize(n = n(), mean=mean(FWBscore), median(FWBscore), sd(FWBscore))
+```
+
+
+```{r}
+
+df %>%
+    ggplot(aes(x=FWBscore, fill=PPETHM)) +
+    geom_histogram(binwidth=10)
+    
+    
+```
+
+
+# Independent Variable - Gender (PPGENDER)
+
+The means financial wellness scores for all non white ethnic groups are lower with Blacks and Hispanics showing a smaller standard deviation. The histogram's across ethnic group are normally distributed an show a substantial overlap.
+
+```{r}
+
+df %>%
+    group_by(PPGENDER) %>%
+    dplyr::summarize(n = n(), mean=mean(FWBscore), median(FWBscore), sd(FWBscore))
+```
+
+
+```{r}
+
+df %>%
+    ggplot(aes(x=FWBscore, fill=PPGENDER)) +
+    geom_histogram(binwidth=10)
+    
+    
 ```
 
 
 
 
 
-```{r}
 
-summary(rt_df)
+# Final Thoughts
 
-
-rt_ny_df <- rt_df %>%
-  filter(region == "NY") 
-  
-death_ny_df <- crdt_df %>% 
-  filter(Date > 20200101, State=="NY") %>%
-   mutate(
-    date = ymd(Date)
-   ) %>%
-  replace_na(list(Deaths_Total=0, Deaths_White=0, Deaths_Black=0, Deaths_Latinx=0, Deaths_Multiracial=0  ))
-
-
-ggplot(data = death_ny_df) + 
-  geom_line(mapping = aes(x=date, y=Deaths_Total, color="death_total")) +
-  geom_line(mapping = aes(x=date, y=Deaths_White, color="death white")) + 
-  geom_line(mapping = aes(x=date, y=Deaths_Black, color="death black")) +
-  geom_line(mapping = aes(x=date, y=Deaths_Latinx, color="death latinx")) +
-  geom_line(mapping = aes(x=date, y=Deaths_Multiracial, color="death multi"))
-
-ggplot(data = rt_ny_df) + 
-  geom_line(mapping = aes(x=date, y=mean))
-
-  
+The value of this data set is that I will be able to conduct the initial analysis and look for additional confounders or additional variables that could assist in explaining the difference in financial wellness scores across the surveys. 
 
 
 
-
-  
-
-```
 
 

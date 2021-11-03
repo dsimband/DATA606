@@ -1,0 +1,296 @@
+---
+title: DATA 606 Data Project Proposal
+author: 'David Simbandumwe'
+output:
+  html_document:
+    df_print: paged
+  pdf_document:
+    extra_dependencies:
+    - geometry
+    - multicol
+    - multirow
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("VennDiagram")
+library(tidyverse)
+library(readtext)
+library(lubridate)
+library(scales)
+
+```
+
+
+
+
+
+
+# Research question 
+
+**You should phrase your research question in a way that matches up with the scope of inference your data set allows for.**
+
+Is race a determination factor in the likelihood of contracting COVID, being hospitalized or dying from COVID related medical complications. The analysis will focus on the likelihood of mortality driven by race. The ethnic breakdown for this data set is White, Asian Pacific Islander, Hispanic / Latino, Black / African American. 
+
+- H0 - Race does not impact the likelihood of an individual dying of COVID. 
+- H1 - Race impacts the likelihood that an individual will die of COVID.
+
+I will look at the national numbers then focus on a few states that report numbers by race. I will also look for any trends by time frame. 
+
+## Questions
+Is this the right framing for this analysis? In class we have tended to use a sample to tell us something about the population. This COVID data has gaps but it close to the true measure of the population.
+
+
+# Cases 
+
+**What are the cases, and how many are there?**
+There are 5,320 unique cases identified by state and the specific date. Each case is represented by the measurements of Cases, Deaths, Hospitalizations, and Tests on a single day broken out by ethnicity (when the data is reported at the state level).
+
+# Data collection 
+
+**Describe the method of data collection.**
+
+The data was collected as part of the The COVID Racial Data Tracker project. The COVID Racial Data Tracker is a collaboration between the COVID Tracking Project and the Boston University Center for Antiracist Research. The projects goal is to gathering the most complete and up-to-date race and ethnicity data on COVID-19 in the United States. In doing so they have asked every state to report complete race and ethnicity data. Our Racial Data Dashboard has the latest.
+
+
+
+# Data Preparation
+
+```{r, include = FALSE }
+# clear data
+rm(list=ls())
+
+
+# load data
+crdt_df <- read_csv( file = "https://covidtracking.com/data/download/all-states-history.csv")
+rt_df <- read_csv( file = "./rt.csv")
+
+
+
+
+crdt_df <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vS8SzaERcKJOD_EzrtCDK1dX1zkoMochlA9iHoHg_RSw3V8bkpfk1mpw4pfL5RdtSOyx_oScsUtyXyk/pub?gid=43720681&single=true&output=csv")
+
+
+
+
+#ny_df <- read_csv("https://covidtracking.com/data/download/new-york-race-ethnicity-historical.csv")
+
+
+```
+
+```{r}
+
+crdt_df <- crdt_df %>% 
+    mutate(
+        Date = ymd(Date)
+    )
+
+
+```
+
+
+
+```{r}
+# summary of data
+dim(crdt_df)
+
+glimpse(crdt_df)
+
+```
+
+
+```{r}
+
+crdt_df %>% 
+    ggplot(aes(death, date)) +
+    geom_point()
+
+
+
+crdt_long_df <- crdt_df %>%
+    pivot_longer(
+        -c(Date,State), 
+        names_to = "type", 
+        values_to="value"
+    ) %>%
+    separate(
+            type, 
+            c("type","ethnicity"), 
+            sep = "_", 
+            extra = "merge", 
+            fill = "right"
+    ) %>%
+    drop_na()
+
+month_df <- crdt_long_df %>%
+    group_by(month = lubridate::floor_date(Date, "month"),State,type,ethnicity) %>%
+    mutate(
+        sum_val = sum(value)
+    ) %>%
+    select(-c(Date,value))
+
+
+
+
+
+```
+
+
+
+
+# Type of study 
+
+**What type of study is this (observational/experiment)?**
+
+This is an observational study based on actual data reported by the 51 states / territories in the United States.
+
+
+# Data Source 
+
+**If you collected the data, state self-collected. If not, provide a citation/link.**
+
+The data was collected as part of the Covid Tracking Project https://covidtracking.com/data. The data can be accessed as a csv file [*COVID-19 CSV*](https://covidtracking.com/data/download/all-states-history.csv)
+
+Atlantic Monthly Group LLC (“The Atlantic”) 2021. 2021-03 [*The COVID Tracking Project at The Atlantic*](https://assets.ctfassets.net/o2ll9t4ee8tq/5P2QPF674OD1TGHUrVABx3/85a456045efa0d70ad42d9bf14c3beb0/CDC_Report_CTP.pdf) 
+
+
+## Dependent Variable
+**What is the response variable? Is it quantitative or qualitative?**
+
+The response variable is the number of deaths and hospitalizations nationally and for the states that report the numbers consistently. 
+
+
+## Independent Variable
+
+**You should have two independent variables, one quantitative and one qualitative.**
+
+The independent variable is the race of the observations and it is qualitative / categorical
+
+
+# Relevant summary statistics 
+
+**Provide summary statistics for each the variables. Also include appropriate visualizations related to your research question (e.g. scatter plot, boxplots, etc). This step requires the use of R, hence a code chunk is provided below. Insert more code chunks as needed.**
+
+
+## Race Independent Variable
+```{r}
+
+summary(crdt_df$death)
+
+
+
+
+```
+
+
+## Deaths
+```{r}
+
+summary(crdt_df$death)
+
+month_df %>% select(type) %>% distinct()
+month_df %>% select(ethnicity) %>% distinct()
+
+
+month_df %>% 
+    filter(ethnicity != "Total" && (grepl("Deaths|Hosp", type))  ) %>%
+    ggplot(aes(x=month, y=sum_val, color=ethnicity, alpha=1/10, date_labels = "%y/%m")) +
+    geom_point() +
+    ylim(c(0, 400000)) +
+    scale_y_continuous(labels = comma) +
+    facet_wrap(~ type, ncol = 1) 
+    
+
+
+month_df %>% 
+    ggplot() + 
+    geom_bar(mapping = aes(x=month, fill = ethnicity))
+
+?separate
+```
+
+
+
+
+
+
+```{r}
+
+death_df <- crdt_df %>% 
+  filter(Date > 20200101) %>%
+  replace_na(list(Deaths_Total=0, Deaths_White=0, Deaths_Black=0, Deaths_Latinx=0, Deaths_Multiracial=0  )) %>%
+  group_by(Date) %>% 
+  mutate(
+    date = ymd(Date),
+    death_total = sum(Deaths_Total, na_rm=FALSE),
+    death_white_total = sum(Deaths_White, na_rm=FALSE),
+    death_black_total = sum(Deaths_Black, na_rm=FALSE),
+    death_latinx_total = sum(Deaths_Latinx, na_rm=FALSE),
+    death_multi_total = sum(Deaths_Multiracial, na_rm=FALSE)
+  ) %>%
+  select (date, death_total, death_white_total, death_black_total,death_latinx_total,death_multi_total) %>%
+  distinct() 
+
+summary(death_df)
+
+
+ggplot(data = death_df) + 
+  geom_line(mapping = aes(x=date, y=death_total, color="death_total")) +
+  geom_line(mapping = aes(x=date, y=death_white_total, color="death white")) + 
+  geom_line(mapping = aes(x=date, y=death_black_total, color="death black")) +
+  geom_line(mapping = aes(x=date, y=death_latinx_total, color="death latinx")) +
+  geom_line(mapping = aes(x=date, y=death_multi_total, color="death multi"))
+  
+
+  
+```
+
+
+
+
+
+```{r}
+
+summary(rt_df)
+
+
+rt_ny_df <- rt_df %>%
+  filter(region == "NY") 
+  
+death_ny_df <- crdt_df %>% 
+  filter(Date > 20200101, State=="NY") %>%
+   mutate(
+    date = ymd(Date)
+   ) %>%
+  replace_na(list(Deaths_Total=0, Deaths_White=0, Deaths_Black=0, Deaths_Latinx=0, Deaths_Multiracial=0  ))
+
+
+ggplot(data = death_ny_df) + 
+  geom_line(mapping = aes(x=date, y=Deaths_Total, color="death_total")) +
+  geom_line(mapping = aes(x=date, y=Deaths_White, color="death white")) + 
+  geom_line(mapping = aes(x=date, y=Deaths_Black, color="death black")) +
+  geom_line(mapping = aes(x=date, y=Deaths_Latinx, color="death latinx")) +
+  geom_line(mapping = aes(x=date, y=Deaths_Multiracial, color="death multi"))
+
+ggplot(data = rt_ny_df) + 
+  geom_line(mapping = aes(x=date, y=mean))
+
+  
+
+
+
+
+  
+
+```
+
+
+#Final throughts
+
+This analysis has been done by several organizations including The Covid Tracking Project. This would be an exploration of how I can apply what we have learned to date to recreate the analysis. 
+
+[*The COVID Racial Data Tracker*](https://covidtracking.com/race)
+
+
+
