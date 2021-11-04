@@ -352,7 +352,7 @@ The PUF survey results can be accessed as a csv file [*Financial well-being surv
 ## Dependent Variable
 **What is the response variable? Is it quantitative or qualitative?**
 
-The dependent variable for the analysis the Financial well-being scale score (FWBscore). This is a qualitative continuous variable. 
+The dependent variable for the analysis the Financial well-being scale score (FWBscore). This is a quantitative continuous variable. 
 
 ## Independent Variable
 **You should have two independent variables, one quantitative and one qualitative.**
