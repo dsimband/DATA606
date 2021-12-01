@@ -57,52 +57,33 @@ source(fun_file_name, local = knitr::knit_global())
 
 
 # Abstract
-Abstract is less than 300 words, free of grammatical errors, summarizes the analysis conducted, has a conclusion and implications
+The deregulation of the financial services industry has provided more investment opportunities for individuals and families but it has also increased the requisite level of financial knowledge necessary to make good decisions. It is no coincidence that these trends have driven an increased focus in financial health and financial wellbeing by, individuals, employers, government agencies and financial services firms. Understanding financial wellness requires a clear definition of wellness, an approach to measuring differences in wellbeing and an understanding the factors that influence consumer financial wellness.
 
-As the importance of financial health of individuals and families continues to grow, people often use the term “financial wellness” to mean the level of a person’s financial health. Financial wellness is a comprehensive, multidimensional concept incorporating financial satisfaction, objective status of financial situation, financial attitudes, and behavior that cannot be assessed through one measure. This chapter discusses the concept and measurement of personal financial wellness and presents “Financial Wellness Diagram.” Future research directions are also discussed.
+This project adopts the definition and measurement methodology developed by the Consumer Financial Protection Bureau as part of their ongoing research efforts. The CFPB defines financial wellness as the “...sense of financial security and freedom of choice—both in the present and when considering the future”. The Consumer Financial Protection Bureau has developed a measurement of consumer financial wellbeing called the Financial Wellbeing Scale (CFPB Score). This program includes a survey that not only captures the 10 questions necessary to calculate the CFPB score but includes additional attributes that paint a holistic financial and demographic picture of an individual or family. 
 
+This analysis will utilize the data from the CFPB Survey. Starting with the non calculated variables linear regression will be used to evaluate the relationship between non scoring attributes demographic, financial, house hold structure characteristics and the CFPB score. 
 
-
+(Please note - that 10 questions that are used to calculate the CFPB score are not included in the attributes evaluated in this analysis)
 
 
 # Part 1 - Introduction
-The research question is clearly stated, can be answered by the data, and the context of the problem clearly explained.
 
-I choose to study the results of the Financial well-being survey. The survey is part of the ongoing research from the Consumer Financial Protection Bureau. It was focused on understanding the factors that support consumer financial well-being in an effort to assist practitioners and policymakers empower more families to lead better financial lives to serve their own goals.
-
-
+This analysis is focused on understanding the factors that impact consumer financial wellbeing. There are numerous sources of analysis, theory and survey data however for the purposes of this project I will focus on the work from the Consumer Financial Protection Bureau National Financial Well-Being Survey Public Use File (PUF). The PUF survey data allows us to analyze a CFPB Score of consumer wellbeing in association with an individuals financial and demographic characteristics. Linear regression will be used to quantify the impact of individual factors and create a predictive model of financial wellbeing. 
 
 <br>
-**The CFPB Financial Well-Being Scale contains the following 10 questions:**
+**Analysis Steps**
 
-How well does this statement describe you or your situation?
-
-1. I could handle a major unexpected expense
-2. I am securing my financial future
-3. Because of my money situation, I feel like I will never have the things I want in life*
-4. I can enjoy life because of the way I’m managing my money
-5. I am just getting by financially*
-6. I am concerned that the money I have or will save won’t last*
-
-
-How often does this statement apply to you?
-
-7. Giving a gift for a wedding, birthday or other occasion would put a strain on my finances for the month*
-8. I have money left over at the end of the month
-9. I am behind with my finances*
-10. My finances control my life*
-
-
-
+- Review the survey data including the cfpb score 
+- Select subset of 217 variables in the survey to analyze 
+- Explore the relationship between individual variables and the cfpb score
+- Fit the full model using linear regression
+- Optimize the model using stepwize regression
+- Fit a models focused on financial planning variables and demographic variables respectively
+- Explore impacts of survey variables on cfpb score
 
 
 
 # Part 2 - Data
-Includes appropriate, well-labeled, accurate displays (graphs and tables) of the data.
-The appropriate statistical test(s) was used for the data and interpretation was clear.
-
-**Describe the method of data collection.**
-
 The data was collected as part of the Consumer Financial Protection Bureau’s (CFPB) National Financial Well-Being Survey Public Use File (PUF). The PUF is a dataset containing 
 
 (1) data collected in the National Financial Well-Being Survey, 
@@ -115,87 +96,28 @@ The PUF was published in 2017.
 
 
 
-```{r}
 
-df <- getCleanFile()
-cfpb_result1<-lm(cfpb_score ~ . ,data=df)
-summary(cfpb_result1)
+**Load data and review summary stats**
 
-```
-
-
-
-
-
+Limited filtering of observations conducted as part of this analysis  Other answers such as "refuse to answer" or "do not know" actual contain some relevant information in the context of a individuals financial characteristics. This can be seen in the prevalence of these answers in the dataset roughly 2/3 or the observations include at least one survey answer in the other category.   
 
 ```{r}
-
+# load data - logic for data tidying is associated DATA606_Functions.R file
 cfpb_df <- getReducedCFPBFile()
-
-
 cfpb_df <- cfpb_df %>% droplevels()
 
 
-cfpb_df <- cfpb_df %>% filter(cfpb_score > 0 &
-                                econ_hh_income != "Refused" &
-                                econ_inc_volatility != "Refused" &
-                                econ_hh_earners != "Refused" & 
-                                econ_emp_status != "Refused" & 
-                                econ_savings != "Refused" & 
-                                hh_status != "Refused" & 
-                                hh_value != "Refused" & 
-                                hh_mortgage != "Refused" & 
-                                per_health != "Refused" & 
-                                hh_arrange != "Refused" & 
-                                hh_size != "Refused" & 
-                                dem_marital != "Refused" & 
-                                dem_age != "Refused" & 
-                                dem_edu != "Refused" & 
-                                dem_race != "Refused" & 
-                                dem_gender != "Refused" & 
-                                fin_achieve_goals != "Refused" & 
-                                fin_goals != "Refused" &      
-                                fin_saving_habit != "Refused" & 
-                                fin_frugal != "Refused" & 
-                                fin_consult_budget != "Refused" & 
-                                fin_follow_budget != "Refused" & 
-                                fin_set_goals != "Refused" & 
-                                fin_clear_plan != "Refused"
-                         )
-
-# analysis
-count(cfpb_df$cfpb_score)
-count(cfpb_df$econ_hh_income)
-count(cfpb_df$econ_inc_volatility)
-count(cfpb_df$econ_hh_earners)
-count(cfpb_df$econ_emp_status)
-count(cfpb_df$econ_savings)
-count(cfpb_df$hh_status)
-count(cfpb_df$hh_value)
-count(cfpb_df$hh_mortgage)
-count(cfpb_df$per_health)
-count(cfpb_df$hh_arrange)
-count(cfpb_df$hh_size)
-count(cfpb_df$dem_marital)
-count(cfpb_df$dem_age)
-count(cfpb_df$dem_edu)
-count(cfpb_df$dem_race)
-count(cfpb_df$dem_gender)
-count(cfpb_df$fin_achieve_goals)
-count(cfpb_df$fin_goals)     
-count(cfpb_df$fin_saving_habit)
-count(cfpb_df$fin_frugal)
-count(cfpb_df$fin_consult_budget)
-count(cfpb_df$fin_follow_budget)
-count(cfpb_df$fin_set_goals)
-count(cfpb_df$fin_clear_plan)
-
-
-
+# Filter records with invalid cfpb scores
+cfpb_df <- cfpb_df %>% filter( cfpb_score > 0)
 
 ```
 
 
+```{r}
+summary(cfpb_df)
+```
+
+The cfpb score for this survey data is near normaly distributed with outlines at the high end and low end of the scoring distribution. 
 
 ```{r}
 
@@ -210,12 +132,148 @@ summary(cfpb_df$cfpb_score)
 
 ```
 
+<br>
+**House Hold Income**
+
+As would be expected the histogram and the box plot for cfpb score categorized by house hold income shows some positive correlation between house hold income and the cfpb_score. 
+
+```{r}
+
+
+# econ_hh_income 
+ggplot(cfpb_df, aes(x=econ_hh_income)) +
+  geom_bar(color="white", fill="black", alpha = 0.6, size = 0.1) +
+  coord_flip() +
+  labs(title = "econ_hh_income")
+
+ggplot(data = cfpb_df) +
+  geom_boxplot(mapping = aes(x=cfpb_score, y=econ_hh_income, color=econ_hh_income)) +
+  labs (title = "econ_hh_income")
+
+
+ggplot(cfpb_df,
+    aes(cfpb_score, fill = econ_hh_income, y = stat(density))) +
+    geom_histogram(binwidth = 1, alpha = 0.7, bins = 100, color="white",size = 0.1) +
+    geom_vline(aes(xintercept = mean(cfpb_score)), linetype = "dashed", size = 0.2) +
+    scale_fill_brewer(palette="Spectral") +
+    labs(title = "CFPB Score (by econ_hh_income)")
+
+
+```
+
+
+<br>
+**Age**
+
+As would be expected the histogram and the box plot for cfpb score categorized by age shows some positive correlation between house hold income and the cfpb_score. This finding aligns with the typical relationship between networth, income and age. 
+
+```{r}
+
+
+# dem_age 
+ggplot(cfpb_df, aes(x=dem_age)) +
+  geom_bar(color="white", fill="black", alpha = 0.6, size = 0.1) +
+  coord_flip() +
+  labs(title = "dem_age")
+
+ggplot(data = cfpb_df) +
+  geom_boxplot(mapping = aes(x=cfpb_score, y=dem_age, color=dem_age)) +
+  labs (title = "dem_age")
+
+
+ggplot(cfpb_df,
+    aes(cfpb_score, fill = dem_age, y = stat(density))) +
+    geom_histogram(binwidth = 1, alpha = 0.7, bins = 100, color="white",size = 0.1) +
+    geom_vline(aes(xintercept = mean(cfpb_score)), linetype = "dashed", size = 0.2) +
+    scale_fill_brewer(palette="Spectral") +
+    labs(title = "CFPB Score (by dem_age)")
+
+
+```
+
+<br>
+**Achive Financial Goals**
+
+The relationship between sfpb_score and confidence in reaching your financial goals is intriguing It highlights a positive relationship between confidence in financial goals and cfpb score. The box plot and histogram show a wide range of survey respondents are optimistic even if their cfpb scores would indicate otherwise.  
+
+
+```{r}
+
+# fin_achieve_goals
+ggplot(cfpb_df, aes(x=fin_achieve_goals)) +
+  geom_bar(color="white", fill="black", alpha = 0.6, size = 0.1) +
+  coord_flip() +
+  labs(title = "fin_achieve_goals")
+
+ggplot(data = cfpb_df) +
+  geom_boxplot(mapping = aes(x=cfpb_score, y=fin_achieve_goals, color=fin_achieve_goals)) +
+  labs (title = "fin_achieve_goals")
+
+
+ggplot(cfpb_df,
+    aes(cfpb_score, fill = fin_achieve_goals, y = stat(density))) +
+    geom_histogram(binwidth = 1, alpha = 0.7, bins = 100, color="white",size = 0.1) +
+    geom_vline(aes(xintercept = mean(cfpb_score)), linetype = "dashed", size = 0.2) +
+    scale_fill_brewer(palette="Spectral") +
+    labs(title = "CFPB Score (by fin_achieve_goals)")
+
+```
+
+
+<br>
+**Health**
+
+Given the structure of the health care system in the United States it is unsurprising that health shows a positive correlated cfpb score. 
+
+
+```{r}
+
+# per_health
+ggplot(cfpb_df, aes(x=fin_frugal)) +
+  geom_bar(color="white", fill="black", alpha = 0.6, size = 0.1) +
+  coord_flip() +
+  labs(title = "per_health")
+
+ggplot(data = cfpb_df) +
+  geom_boxplot(mapping = aes(x=cfpb_score, y=per_health, color=per_health)) +
+  labs (title = "per_health")
+
+
+ggplot(cfpb_df,
+    aes(cfpb_score, fill = per_health, y = stat(density))) +
+    geom_histogram(binwidth = 1, alpha = 0.7, bins = 100, color="white",size = 0.1) +
+    geom_vline(aes(xintercept = mean(cfpb_score)), linetype = "dashed", size = 0.2) +
+    scale_fill_brewer(palette="Spectral") +
+    labs(title = "CFPB Score (by per_health)")
+
+
+```
+
+
 
 
 
 # Part 3 - Exploratory data analysis
 
-## fit full model
+This analysis uses linear regression to identify and quantify the impacts of survey variables to the cfpb score. 
+
+<br>
+**Preconditions for Linear Models**
+
+The residual analysis from the CFPB model and Federal Reserve model roughly adheres to the following pre-conditions for linear modeling. More analysis would be required to ensure independence and a linear relationship to the dependent variable. It would be difficult to assert full independence of the predictor variables given that each case reflect an individual. Thre are numerous studies that link demographics, race, geography and age to economic outcomes. 
+
+1. residuals are nearly normal
+2. residuals have constant variability
+3. residuals are independent
+4. each variable is linearly related to the outcome
+
+
+
+
+
+## Fit Full Model
+
+The full model of all 26 variables included in the analysis is used as a starting point. The resulting model has an adjusted $R^2$ of 0.5739.
 
 ```{r}
 
@@ -227,8 +285,8 @@ cfpb_test <-  testing(cfpb_split)
 
 
 # fit full model
- # cfpb_result1<-lm(cfpb_score ~ . ,data=cfpb_training)
- # summary(cfpb_result1)
+cfpb_result1<-lm(cfpb_score ~ . ,data=cfpb_training)
+summary(cfpb_result1)
  
  
 ```
@@ -239,22 +297,12 @@ cfpb_test <-  testing(cfpb_split)
 
 ## Stepwise model optimization
 
-```{r}
-
-# stepwise regression
-# cfpb_results2<-stats::step(cfpb_result1, direction = "both")
-
-
-```
-
-
-
+Starting with the full model that incldued all 26 variables setpwize regression was used to optimize the model. 
 
 ```{r, echo=FALSE, results='hide'}
 
-
 # Bayes information criterion (BIC)
-# cfpb_result2<-stats::step(cfpb_result1, k=log(nrow(cfpb_training)))
+cfpb_result2<-stats::step(cfpb_result1, k=log(nrow(cfpb_training)))
 
 ```
 
@@ -270,16 +318,16 @@ cfpb_test <-  testing(cfpb_split)
 
 
 Model stats
-- r-squared for the model is 0.4118
+- r-squared for the model is 0.5633
 - The residual analysis analysis shows several outliers that are impacting the model
 
 
 ```{r}
 
-# Step:  AIC=22814.15
+# Step:  AIC=23075.37
 # cfpb_score ~ econ_hh_income + econ_savings + per_health + dem_age + 
-#    fin_achieve_goals + fin_saving_habit + fin_frugal + fin_consult_budget
-
+#     fin_achieve_goals + fin_saving_habit + fin_consult_budget + 
+#     fin_set_goals
 
 
 # Model Specification
@@ -291,7 +339,8 @@ lm_model <- linear_reg() %>%
 # Fitting to Trained Data
 lm_fit <- lm_model %>% 
           fit(cfpb_score ~ econ_hh_income + econ_savings + per_health + dem_age + 
-    fin_achieve_goals + fin_saving_habit + fin_frugal + fin_consult_budget
+                            fin_achieve_goals + fin_saving_habit + fin_consult_budget + 
+                            fin_set_goals
               
               , data = cfpb_training)
 
@@ -316,6 +365,8 @@ vip(lm_fit, num_features=25)
 
 
 
+<br>
+**Testing Optimized Model**
 
 
 ```{r}
@@ -344,21 +395,27 @@ ggplot(data = cfpb_results,
   geom_point(color = '#006EA1') +
   geom_smooth(method = lm) +
   geom_abline(intercept = 0, slope = 1, color = 'orange') +
-  labs(title = 'Linear Regression Results - CFPB Score',
+  labs(title = 'Linear Regression Results - Optimized',
        x = 'Predicted',
        y = 'Actual')
 
 ```
 
 
-##  demographic model
+##  Demographic Model
+
+The demographic model that includes race, gender and education has limited predictive power for overall cfpb score on its own It would be interesting to review the impacts of race, gender and education if we held other variables constant. 
+
+Model stats
+- r-squared for the model is 0.08288
+- The residual analysis analysis shows several outliers that are impacting the model
+
 
 
 ```{r}
 
 # Step:  AIC=22814.15
-# cfpb_score ~ per_health + dem_marital + dem_age + dem_generation + 
-#            dem_edu + dem_race +dem_gender   
+# cfpb_score ~ dem_generation + dem_edu + dem_race +dem_gender   
 
 
 # Model Specification
@@ -369,8 +426,7 @@ lm_model <- linear_reg() %>%
 
 # Fitting to Trained Data
 lm_fit <- lm_model %>% 
-          fit(cfpb_score ~ per_health + dem_marital + dem_age + dem_generation + 
-                  dem_edu + dem_race + dem_gender 
+          fit(cfpb_score ~ dem_edu + dem_race + dem_gender 
               
               , data = cfpb_training)
 
@@ -393,12 +449,8 @@ vip(lm_fit, num_features=25)
 
 ```
 
-
-
-## 
-
-
-
+<br>
+**Testing Demographic Model**
 
 ```{r}
 
@@ -425,21 +477,26 @@ ggplot(data = cfpb_results,
   geom_point(color = '#006EA1') +
   geom_smooth(method = lm) +
   geom_abline(intercept = 0, slope = 1, color = 'orange') +
-  labs(title = 'Linear Regression Results - CFPB Score',
+  labs(title = 'Linear Regression Results - Demographic',
        x = 'Predicted',
        y = 'Actual')
 
 ```
     
 
-## financial planning
+## Financial Planning
 
+The model that focused on financial planning, budgeting and setting goals has some explanatory power. Although 0.2717 is relativily low in comparison to the other models it is significant when considered in the context of the variable that are not included such as income, education and age. 
+
+Model stats
+- r-squared for the model is 0.2717
+- The residual analysis analysis shows several outliers that are impacting the model
 
 
 ```{r}
 
 # Step:  AIC=22814.15
-# cfpb_score ~ fin_achieve_goals + fin_goals + fin_saving_habit + fin_frugal + 
+# cfpb_score ~  fin_goals + fin_saving_habit + fin_frugal + 
 #                       fin_consult_budget + fin_follow_budget + fin_set_goals + fin_clear_plan   
 
 
@@ -451,7 +508,8 @@ lm_model <- linear_reg() %>%
 
 # Fitting to Trained Data
 lm_fit <- lm_model %>% 
-          fit(cfpb_score ~ fin_achieve_goals + fin_goals + fin_saving_habit + fin_frugal + fin_consult_budget +             fin_follow_budget + fin_set_goals + fin_clear_plan  
+          fit(cfpb_score ~ fin_goals + fin_saving_habit + fin_frugal + fin_consult_budget + 
+                  fin_follow_budget + fin_set_goals + fin_clear_plan  
               
               , data = cfpb_training)
 
@@ -476,8 +534,8 @@ vip(lm_fit, num_features=25)
 
 
 
-## 
-
+<br>
+**Testing Financial Planning Model**
 
 
 
@@ -517,11 +575,27 @@ ggplot(data = cfpb_results,
 
 
 # Part 5 - Conclusion
-Conclusion includes a clear answer to the statistical question that is consistent with the data analysis and the method of data collection.
+
+A linear regression model was developed using the results of the Consumer Financial Protection Bureau’s (CFPB) National Financial Well-Being Survey Public Use File (PUF). The model predicts over 0.5608 cfpb score given the 8 variable selected for the optimized model. 
+
+**Model Performance**
+- adjusted $R^2$ 0.5608655	
+- root mean square error 9.609951
+
+**Model Variables**
+The following variable are included in the model as significant contributors to the overall model accuracy. 
+
+- econ_hh_income (PPINCIMP) - The survey respondents Household Income for a given year.
+- econ_savings (SAVINGSRANGES) - An assessment of the amount of savings that the survey respondant currenlty has. 
+- per_health (HEALTH) - An assessment of the survey respondents overall health.
+- dem_age (agecat) - The age of the survey respondent (8 categories).
+- fin_achieve_goals (GOALCONF) - An assessment of the ability of the survey respondent to achieve their financial goals. 
+- fin_saving_habit (SAVEHABIT) - An assessment of savings habits and how often money is put away.
+- fin_consult_budget (PROPPLAN_1) - An assessment of how budgeting impacts spending decisions.
+- fin_set_goals (PROPPLAN_3) - An assessment of financial planning and goal setting discipline.
 
 
-The value of this data set is that I will be able to conduct the initial analysis and look for additional confounders or additional variables that could assist in explaining the difference in financial wellness scores across the surveys. 
-
+The findings for the analysis are not surprising and are consistent with several studies in the industry however deeper analysis is warranted. The cfpb scaled score is designed to cover the entire population however it is not surprising that the resulting model breaks down slightly at the higher and lower ranges of the cfpb score. A more localized analysis of cfpb score ranges might provide some additional insight into the factors that impact consumer financial wellness.  
 
 
 
@@ -535,4 +609,163 @@ There are numerous studies of financial wellness sponsored by financial firms, i
 # Appendix (optional)
 
 
-Remove this section if you don't have an appendix
+## CFPB Financial Well-Being Scale Methodology
+
+The CFPB Financial Well-Being Scale methodology uses the following 10 questions to calculate the cfpb score. There is some overlap between the questions used to calculate the cfpb score and the survey questions. The optimized models presented in this analysis did not include any of the variable that overlap with the scoring questions. 
+
+How well does this statement describe you or your situation?
+
+1. I could handle a major unexpected expense
+2. I am securing my financial future
+3. Because of my money situation, I feel like I will never have the things I want in life*
+4. I can enjoy life because of the way I’m managing my money
+5. I am just getting by financially*
+6. I am concerned that the money I have or will save won’t last*
+
+
+How often does this statement apply to you?
+
+7. Giving a gift for a wedding, birthday or other occasion would put a strain on my finances for the month*
+8. I have money left over at the end of the month
+9. I am behind with my finances*
+10. My finances control my life*
+
+
+
+The research question is clearly stated, can be answered by the data, and the context of the problem clearly explained.
+
+
+
+## Review of the variables
+
+The PUF includes financial attitude that were not included as part of the analysis but provide a interesting window into the relationship of financial attitudes to consumer financial wellbeing. 
+
+```{r}
+
+result_df <- getResultsCFPBFile()
+
+```
+
+
+
+
+```{r}
+
+
+# life_satisfied
+ggplot(result_df, aes(x=life_satisfied)) +
+  geom_bar(color="white", fill="black", alpha = 0.6, size = 0.1) +
+  coord_flip() +
+  labs(title = "life_satisfied")
+
+ggplot(data = result_df) +
+  geom_boxplot(mapping = aes(x=cfpb_score, y=life_satisfied, color=life_satisfied)) +
+  labs (title = "life_satisfied")
+
+
+ggplot(result_df,
+    aes(cfpb_score, fill = life_satisfied, y = stat(density))) +
+    geom_histogram(binwidth = 1, alpha = 0.7, bins = 100, color="white",size = 0.1) +
+    geom_vline(aes(xintercept = mean(cfpb_score)), linetype = "dashed", size = 0.2) +
+    scale_fill_brewer(palette="Spectral") +
+    labs(title = "CFPB Score (by life_satisfied)")
+
+```
+
+
+
+
+```{r}
+
+# life_optimistic
+ggplot(result_df, aes(x=life_optimistic)) +
+  geom_bar(color="white", fill="black", alpha = 0.6, size = 0.1) +
+  coord_flip() +
+  labs(title = "life_optimistic")
+
+ggplot(data = result_df) +
+  geom_boxplot(mapping = aes(x=cfpb_score, y=life_optimistic, color=life_optimistic)) +
+  labs (title = "life_optimistic")
+
+
+ggplot(result_df,
+    aes(cfpb_score, fill = life_optimistic, y = stat(density))) +
+    geom_histogram(binwidth = 1, alpha = 0.7, bins = 100, color="white",size = 0.1) +
+    geom_vline(aes(xintercept = mean(cfpb_score)), linetype = "dashed", size = 0.2) +
+    scale_fill_brewer(palette="Spectral") +
+    labs(title = "CFPB Score (by life_optimistic)")
+```
+
+
+
+```{r}
+# material_admire_wealth
+ggplot(result_df, aes(x=material_admire_wealth)) +
+  geom_bar(color="white", fill="black", alpha = 0.6, size = 0.1) +
+  coord_flip() +
+  labs(title = "material_admire_wealth")
+
+ggplot(data = result_df) +
+  geom_boxplot(mapping = aes(x=cfpb_score, y=material_admire_wealth, color=material_admire_wealth)) +
+  labs (title = "material_admire_wealth")
+
+
+ggplot(result_df,
+    aes(cfpb_score, fill = material_admire_wealth, y = stat(density))) +
+    geom_histogram(binwidth = 1, alpha = 0.7, bins = 100, color="white",size = 0.1) +
+    geom_vline(aes(xintercept = mean(cfpb_score)), linetype = "dashed", size = 0.2) +
+    scale_fill_brewer(palette="Spectral") +
+    labs(title = "CFPB Score (by material_admire_wealth)")
+```
+
+
+
+```{r}
+
+# material_define_worth
+ggplot(result_df, aes(x=material_define_worth)) +
+  geom_bar(color="white", fill="black", alpha = 0.6, size = 0.1) +
+  coord_flip() +
+  labs(title = "material_define_worth")
+
+ggplot(data = result_df) +
+  geom_boxplot(mapping = aes(x=cfpb_score, y=material_define_worth, color=material_define_worth)) +
+  labs (title = "material_define_worth")
+
+
+ggplot(result_df,
+    aes(cfpb_score, fill = material_define_worth, y = stat(density))) +
+    geom_histogram(binwidth = 1, alpha = 0.7, bins = 100, color="white",size = 0.1) +
+    geom_vline(aes(xintercept = mean(cfpb_score)), linetype = "dashed", size = 0.2) +
+    scale_fill_brewer(palette="Spectral") +
+    labs(title = "CFPB Score (by material_define_worth)")
+
+```
+
+
+
+```{r}
+
+# material_impress
+ggplot(result_df, aes(x=material_impress)) +
+  geom_bar(color="white", fill="black", alpha = 0.6, size = 0.1) +
+  coord_flip() +
+  labs(title = "material_impress")
+
+ggplot(data = result_df) +
+  geom_boxplot(mapping = aes(x=cfpb_score, y=material_impress, color=material_impress)) +
+  labs (title = "material_impress")
+
+
+ggplot(result_df,
+    aes(cfpb_score, fill = material_impress, y = stat(density))) +
+    geom_histogram(binwidth = 1, alpha = 0.7, bins = 100, color="white",size = 0.1) +
+    geom_vline(aes(xintercept = mean(cfpb_score)), linetype = "dashed", size = 0.2) +
+    scale_fill_brewer(palette="Spectral") +
+    labs(title = "CFPB Score (by material_impress)")
+
+```
+
+
+
+
