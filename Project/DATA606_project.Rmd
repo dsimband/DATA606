@@ -115,8 +115,7 @@ cfpb_df <- cfpb_df %>% droplevels()
 
 # Filter records with invalid cfpb scores
 cfpb_df <- cfpb_df %>% filter( cfpb_score > 0)
-
-
+    
 ```
 
 
@@ -157,7 +156,7 @@ ggplot(cfpb_df, aes(x=econ_hh_income)) +
 
 ggplot(data = cfpb_df) +
   geom_boxplot(mapping = aes(x=cfpb_score, y=econ_hh_income, color=econ_hh_income)) +
-  labs (title = "econ_hh_income")
+  labs (title="CFPB Score ( by econ_hh_income)", x="CFPB score", y="house hold income")
 
 
 ggplot(cfpb_df,
@@ -186,7 +185,7 @@ ggplot(cfpb_df, aes(x=dem_age)) +
 
 ggplot(data = cfpb_df) +
   geom_boxplot(mapping = aes(x=cfpb_score, y=dem_age, color=dem_age)) +
-  labs (title = "dem_age")
+  labs (title = "CFPB Score (by dem_age)", x="CFPB score", y="age category")
 
 
 ggplot(cfpb_df,
@@ -215,7 +214,7 @@ ggplot(cfpb_df, aes(x=fin_achieve_goals)) +
 
 ggplot(data = cfpb_df) +
   geom_boxplot(mapping = aes(x=cfpb_score, y=fin_achieve_goals, color=fin_achieve_goals)) +
-  labs (title = "fin_achieve_goals")
+  labs (title = "CFPB Score (by fin_achieve_goals)", x="CFPB score", y="belief in achieving fin goals")
 
 
 ggplot(cfpb_df,
@@ -244,7 +243,7 @@ ggplot(cfpb_df, aes(x=fin_frugal)) +
 
 ggplot(data = cfpb_df) +
   geom_boxplot(mapping = aes(x=cfpb_score, y=per_health, color=per_health)) +
-  labs (title = "per_health")
+  labs (title = "CFPB Score (by per_health)", x="CFPB score", y="personal health evaluation")
 
 
 ggplot(cfpb_df,
@@ -391,9 +390,6 @@ rmse(cfpb_results, truth = cfpb_score, estimate = .pred)
 rsq(cfpb_results, truth = cfpb_score, estimate = .pred)
 
 
-
-?rmse
-?rsq
 
 ```
 
